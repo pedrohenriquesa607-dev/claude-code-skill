@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "shadcn-ui": {
+      "command": "npx",
+      "args": ["-y", "--package=@jpisnice/shadcn-ui-mcp-server", "shadcn-mcp"]
+    }
+  }
+}
