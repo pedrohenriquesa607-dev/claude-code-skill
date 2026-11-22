@@ -64,6 +64,14 @@ scripts/add_decision.sh "decisão" "raciocínio" "resultado esperado"
   no repositório pedrohenriquesa607-dev/claude-code-skill, branch
   claude/magical-brown-x5trn6."
 
+### Painel de tarefas
+
+- Interface local: `python3 tasks/server.py` → http://127.0.0.1:8765.
+- Dados em `tasks/tasks.json`, atividade em `tasks/tasks.log` — sempre via
+  `tasks/store.py` / `tasks/tasks_cli.py`, nunca editando o JSON na mão.
+- Uma tarefa agendada de hora em hora segue `tasks/AGENT.md`: trabalha nas
+  pendentes por prioridade, registra o resultado e marca como concluída.
+
 ### Ao final de cada sessão (ou ao concluir uma tarefa relevante)
 
 1. Atualize os arquivos de `memory/` com o que mudou. Edite entradas
