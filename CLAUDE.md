@@ -66,9 +66,13 @@ scripts/add_decision.sh "decisão" "raciocínio" "resultado esperado"
 
 ### Painel de tarefas
 
-- Interface local: `python3 tasks/server.py` → http://127.0.0.1:8765.
-- Dados em `tasks/tasks.json`, atividade em `tasks/tasks.log` — sempre via
-  `tasks/store.py` / `tasks/tasks_cli.py`, nunca editando o JSON na mão.
+- Painel publicado: https://painel-tarefas.pedrohenriquesa607.workers.dev
+  (Cloudflare Worker `painel-tarefas` + banco D1 `painel-tarefas`, login pelo
+  secret `ACCESS_TOKEN`). Código em `cloudflare/`; a Cloudflare publica sozinha a
+  cada push na branch padrão `claude/charming-turing-pdpjug` (Workers Builds).
+- `tasks/tasks_cli.py` usa o painel (via `tasks/remote.json`; senha injetada pelo
+  proxy). `tasks/tasks.json` e `tasks/tasks.log` são cópias exportadas.
+- Versão offline: `TASKS_LOCAL=1` + `python3 tasks/server.py` → http://127.0.0.1:8765.
 - Uma tarefa agendada de hora em hora segue `tasks/AGENT.md`: trabalha nas
   pendentes por prioridade, registra o resultado e marca como concluída.
 

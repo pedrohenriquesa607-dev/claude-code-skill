@@ -53,6 +53,7 @@ async function api(req, env, url) {
   if (!(await authorized(req, env))) return json({ error: "não autorizado" }, 401);
   const path = url.pathname, m = req.method;
   const idMatch = path.match(/^\/api\/tasks\/(\d+)$/);
+  const actor = req.headers.get("x-actor") === "agente" ? "agente" : "web";
 
   if (path === "/api/config" && m === "GET") return json({ mode: "cloud" });
 
@@ -65,7 +66,7 @@ async function api(req, env, url) {
     const row = await env.DB.prepare(
       "INSERT INTO tasks (title, description, priority, status, result, created_at, updated_at) VALUES (?, ?, ?, 'pendente', '', ?, ?) RETURNING *"
     ).bind(f.title, f.description, f.priority, t, t).first();
-    await log(env, "web", `criada #${row.id} [${row.priority}] ${row.title}`);
+    await log(env, actor, `criada #${row.id} [${row.priority}] ${row.title}`);
     return json(row, 201);
   }
   if (idMatch && m === "PUT") {
@@ -80,15 +81,21 @@ async function api(req, env, url) {
       .bind(...keys.map(k => ch[k]), id).first();
     const diff = ["title", "priority", "status"].filter(k => k in ch && before[k] !== ch[k]).map(k => `${k}: '${before[k]}' -> '${ch[k]}'`);
     const extra = ["description", "result"].filter(k => k in ch && before[k] !== ch[k]);
-    await log(env, "web", `editada #${id}` + (diff.length ? ` (${diff.join(", ")})` : "") + (extra.length ? ` [${extra.join(", ")} alterado]` : ""));
+    await log(env, actor, `editada #${id}` + (diff.length ? ` (${diff.join(", ")})` : "") + (extra.length ? ` [${extra.join(", ")} alterado]` : ""));
     return json(row);
   }
   if (idMatch && m === "DELETE") {
     const id = Number(idMatch[1]);
     const row = await env.DB.prepare("DELETE FROM tasks WHERE id = ? RETURNING title").bind(id).first();
     if (!row) return json({ error: "tarefa não encontrada" }, 404);
-    await log(env, "web", `excluída #${id} ${row.title}`);
+    await log(env, actor, `excluída #${id} ${row.title}`);
     return json({ ok: true });
+  }
+  if (path === "/api/log" && m === "POST") {
+    const msg = String((await req.json()).msg ?? "").trim().slice(0, 2000);
+    if (!msg) throw new BadRequest("mensagem vazia");
+    await log(env, actor, msg);
+    return json({ ok: true }, 201);
   }
   if (path === "/api/log" && m === "GET") {
     const { results } = await env.DB.prepare("SELECT ts, actor, msg FROM log ORDER BY id DESC LIMIT 100").all();

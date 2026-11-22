@@ -1,10 +1,16 @@
 # Agente de tarefas — roteiro da execução de hora em hora
 
+As tarefas ficam no painel publicado (https://painel-tarefas.pedrohenriquesa607.workers.dev,
+Cloudflare Worker + D1). `tasks/tasks_cli.py` fala com ele sozinho: a senha é
+injetada pelo proxy do ambiente. Nunca edite `tasks.json` na mão — ele é só uma
+cópia exportada do painel.
+
 ## 1. Preparar
 - `git fetch origin claude/magical-brown-x5trn6 && git checkout claude/magical-brown-x5trn6 && git pull`
 - `python3 tasks/tasks_cli.py list`
 - Se não houver tarefa `pendente` nem `em_andamento`: termine sem commit e sem
   log (evita um commit vazio por hora).
+- Se o painel não responder (erro de rede ou 401), termine e diga isso no resumo.
 
 ## 2. Escolher
 - Primeiro retome qualquer `em_andamento` (uma execução anterior caiu no meio).
@@ -45,6 +51,8 @@ diga no motivo o que falta.
 - Nunca use mocks ou resultados inventados para dar uma tarefa por concluída.
 
 ## 6. Finalizar
+- `python3 tasks/tasks_cli.py export` (atualiza `tasks/tasks.json` e `tasks/tasks.log`
+  com o estado do painel).
 - `git add -A && git commit -m "tasks: execução <AAAA-MM-DDTHH:MM> (#ids)"` e
   `git push -u origin claude/magical-brown-x5trn6`.
 - Resuma em português: o que foi concluído, o que foi bloqueado e por quê, o

@@ -1,2 +1,3 @@
 id,data,decisao,raciocinio,resultado_esperado,data_revisao,status
 1,2026-11-22,Guardar a memória entre sessões em arquivos versionados no repositório (memory/),"O container é efêmero; um /memory fora do git seria apagado ao fim da sessão",Contexto do usuário preservado e lido automaticamente em toda nova sessão,2026-12-22,
+2,2026-11-22,"Hospedar o painel de tarefas na Cloudflare (Worker + D1), publicado automaticamente a partir do GitHub",O token de API da Cloudflare não funcionava pelo proxy do ambiente; o deploy via GitHub (Workers Builds) dispensa token e republica a cada push,"Painel acessível de qualquer lugar com login, e o agente de hora em hora lendo as tarefas direto do site sem sincronizar",2026-12-22,
