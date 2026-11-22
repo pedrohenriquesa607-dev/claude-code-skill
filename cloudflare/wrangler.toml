@@ -1,0 +1,11 @@
+name = "painel-tarefas"
+main = "src/worker.js"
+compatibility_date = "2025-06-01"
+workers_dev = true
+
+rules = [{ type = "Text", globs = ["**/*.html"], fallthrough = true }]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "painel-tarefas"
+database_id = "3a6194d6-9ec6-4fb2-bc61-b793f55edd14"

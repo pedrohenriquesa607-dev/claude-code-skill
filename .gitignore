@@ -1,2 +1,5 @@
 __pycache__/
 *.tmp
+.wrangler/
+node_modules/
+.dev.vars

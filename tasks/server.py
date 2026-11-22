@@ -75,6 +75,8 @@ class H(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path in ("/", "/index.html"):
             self._send(200, WEB.read_bytes(), "text/html")
+        elif self.path == "/api/config":
+            self._send(200, {"mode": "local"})
         elif self.path == "/api/tasks":
             self._send(200, store.list_tasks())
         elif self.path == "/api/log":
