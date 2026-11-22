@@ -49,6 +49,21 @@ scripts/add_decision.sh "decisão" "raciocínio" "resultado esperado"
 - Depois que o usuário revisar uma decisão, mude o `status` para `REVIEWED`.
 - Faça commit e push do CSV logo após registrar.
 
+### Inbox Manager (Gmail)
+
+- Roteiro completo: `inbox/INBOX_MANAGER.md`. Estado em
+  `inbox/emails_processed.json`, log em `inbox/inbox_manager.log`, ambos
+  gravados só por `scripts/inbox_state.py`.
+- Classifica e-mails novos em URGENTE / PRECISA DE RESPOSTA / FYI / LIXO e cria
+  rascunhos para os dois primeiros. **Nunca envia, nunca apaga.**
+- O repositório é público: nunca grave remetentes, assuntos ou conteúdo de
+  e-mail em nenhum arquivo do repositório.
+- Se o usuário pedir para ativar a execução de hora em hora e o Gmail estiver
+  conectado nesta sessão, crie a tarefa agendada (sessão nova a cada execução,
+  cron `0 * * * *`, conector Gmail) com o prompt: "Siga inbox/INBOX_MANAGER.md
+  no repositório pedrohenriquesa607-dev/claude-code-skill, branch
+  claude/magical-brown-x5trn6."
+
 ### Ao final de cada sessão (ou ao concluir uma tarefa relevante)
 
 1. Atualize os arquivos de `memory/` com o que mudou. Edite entradas
