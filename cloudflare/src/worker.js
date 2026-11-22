@@ -39,7 +39,8 @@ async function log(env, actor, msg) {
 }
 
 async function authorized(req, env) {
-  const got = (req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
+  // Tolerante a "Bearer Bearer x" e espaços sobrando (valor colado com prefixo).
+  const got = (req.headers.get("authorization") || "").trim().replace(/^(Bearer\s+)+/i, "").trim();
   const want = env.ACCESS_TOKEN || "";
   if (!want || got.length !== want.length) return false;
   const a = new TextEncoder().encode(got), b = new TextEncoder().encode(want);
