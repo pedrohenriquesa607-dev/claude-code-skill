@@ -1,24 +1,16 @@
 # Decisões
 
-Registro de decisões tomadas, da mais recente para a mais antiga.
-Formato de cada entrada:
+O registro de decisões fica em **`memory/decisions.csv`** (fonte única).
+Este arquivo existe só como ponteiro — não registre decisões aqui.
 
-```
-## AAAA-MM-DD — <título curto>
-- **Decisão:** o que foi decidido
-- **Motivo:** por quê
-- **Alternativas descartadas:** o que foi considerado e não escolhido
-- **Status:** ativa | substituída por <título> | revogada
-```
+Colunas: `id, data, decisao, raciocinio, resultado_esperado, data_revisao, status`
 
----
+- `data_revisao` = `data` + 30 dias.
+- `status`: vazio (aguardando) → `REVIEW DUE` (marcado pela verificação diária)
+  → `REVIEWED` (depois que o usuário revisar; acrescente o desfecho ao raciocínio
+  ou como nova decisão).
 
-## 2026-11-22 — Sistema de memória persistente em arquivos
-- **Decisão:** guardar a memória entre sessões em `memory/` (decisions, people,
-  preferences, user), com instruções no `CLAUDE.md` para ler no início e
-  atualizar no fim de cada sessão.
-- **Motivo:** o ambiente é efêmero; arquivos versionados no git são a forma
-  confiável de manter contexto entre sessões.
-- **Alternativas descartadas:** diretório `/memory` na raiz do sistema (seria
-  apagado junto com o container).
-- **Status:** ativa
+Comandos:
+- Registrar: `scripts/add_decision.sh "decisão" "raciocínio" "resultado esperado" [AAAA-MM-DD]`
+- Marcar vencidas: `scripts/check_reviews.sh` (roda diariamente)
+- Ver pendentes: `./review.sh`

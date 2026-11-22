@@ -1,0 +1,2 @@
+id,data,decisao,raciocinio,resultado_esperado,data_revisao,status
+1,2026-11-22,Guardar a memória entre sessões em arquivos versionados no repositório (memory/),"O container é efêmero; um /memory fora do git seria apagado ao fim da sessão",Contexto do usuário preservado e lido automaticamente em toda nova sessão,2026-12-22,

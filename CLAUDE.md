@@ -10,16 +10,18 @@ memória precisa ser commitada e enviada (push)** para não se perder.
 |---|---|
 | `memory/user.md` | Quem é o usuário: papel, objetivos, contexto, projetos em andamento |
 | `memory/preferences.md` | Como o usuário gosta que eu trabalhe: idioma, estilo, ferramentas, o que evitar |
-| `memory/decisions.md` | Decisões tomadas (técnicas ou não), com data, motivo e alternativas descartadas |
+| `memory/decisions.csv` | Registro de decisões (ver seção abaixo); `decisions.md` só explica o formato |
 | `memory/people.md` | Pessoas mencionadas: quem são, relação com o usuário, contexto relevante |
 
 ### No início de cada sessão
 
-1. Leia os quatro arquivos em `memory/` **antes** de responder à primeira mensagem.
-2. Aplique o que estiver lá: siga as preferências, respeite as decisões
+1. Leia `memory/user.md`, `memory/preferences.md`, `memory/people.md` e `memory/decisions.csv` **antes** de responder à primeira mensagem.
+2. Rode `./review.sh`. Se houver decisões com `REVIEW DUE`, avise o usuário
+   logo no início e pergunte como cada uma se saiu.
+3. Aplique o que estiver lá: siga as preferências, respeite as decisões
    registradas e use o contexto do usuário e das pessoas.
-3. Não repita o conteúdo da memória para o usuário, a menos que ele pergunte.
-4. Se algo na memória contradizer o que o usuário diz agora, o usuário vence —
+4. Não repita o conteúdo da memória para o usuário, a menos que ele pergunte.
+5. Se algo na memória contradizer o que o usuário diz agora, o usuário vence —
    e a memória deve ser corrigida no final.
 
 ### Durante a sessão
@@ -28,6 +30,24 @@ memória precisa ser commitada e enviada (push)** para não se perder.
   ("prefiro X"), uma decisão tomada, uma pessoa nova, uma mudança de contexto.
 - Se o usuário disser "lembre disso" ou "esqueça isso", atualize a memória
   imediatamente, sem esperar o fim.
+
+### Registro de decisões
+
+Sempre que o usuário descrever uma decisão que está tomando, registre-a na hora:
+
+```bash
+scripts/add_decision.sh "decisão" "raciocínio" "resultado esperado"
+```
+
+- Extraia decisão, raciocínio e resultado esperado da fala do usuário. Se o
+  raciocínio ou o resultado esperado não estiverem claros, pergunte antes de
+  registrar.
+- A data é hoje e a revisão é automaticamente daqui a 30 dias.
+- Confirme ao usuário o número da decisão e a data de revisão.
+- Uma verificação diária (`scripts/check_reviews.sh`) marca com `REVIEW DUE`
+  as decisões que chegaram à data de revisão. `./review.sh` lista só essas.
+- Depois que o usuário revisar uma decisão, mude o `status` para `REVIEWED`.
+- Faça commit e push do CSV logo após registrar.
 
 ### Ao final de cada sessão (ou ao concluir uma tarefa relevante)
 
