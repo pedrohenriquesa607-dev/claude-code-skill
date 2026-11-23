@@ -1,0 +1,10 @@
+# Sites e demonstrações da NexCode. Cada site fica em public/<nome>/ e abre em
+# https://nexcode.pedrohenriquesa607.workers.dev/<nome>/  (a Cloudflare publica sozinha a cada push).
+name = "nexcode"
+compatibility_date = "2025-06-01"
+workers_dev = true
+
+[assets]
+directory = "./public"
+not_found_handling = "404-page"
+html_handling = "auto-trailing-slash"

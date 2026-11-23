@@ -91,12 +91,10 @@ scripts/add_decision.sh "decisão" "raciocínio" "resultado esperado"
 
 ### Sites dos clientes
 
-- Pasta `sites/public/` publicada pelo **Cloudflare Pages** (projeto `nexcode`, saída
-  `sites/public`, sem build) a cada push na branch padrão: cada site em
-  `sites/public/<nome>/`, endereço https://nexcode.pages.dev/<nome>/.
-  Roteiro do agente: `sites/SITES.md`.
-- O usuário NÃO quer trocar o subdomínio workers.dev (pedrohenriquesa607) nem comprar
-  domínio; o Pages evita mostrar esse nome nos sites novos.
+- Pasta `sites/` = Worker `nexcode` (Workers Builds, deploy `cd sites && npx wrangler deploy`,
+  publica a cada push na branch padrão). Cada site em `sites/public/<nome>/`, endereço
+  https://nexcode.pedrohenriquesa607.workers.dev/<nome>/. Roteiro do agente: `sites/SITES.md`.
+- O usuário não quer trocar o subdomínio workers.dev nem comprar domínio (2026-11-23).
 
 ### Ao final de cada sessão (ou ao concluir uma tarefa relevante)
 
