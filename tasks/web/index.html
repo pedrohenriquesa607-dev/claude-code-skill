@@ -12,61 +12,91 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Tarefas">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<script src="/md.js"></script>
 <style>
 :root{
   --bg:#f6f5f2;--surface:#fff;--surface-2:#f0eee9;--text:#1d1c1a;--muted:#6b6760;--border:#e2dfd8;
-  --accent:#2f5bd3;--accent-text:#fff;--danger:#c2361f;
+  --accent:#2f5bd3;--accent-soft:#e6ecfb;--accent-text:#fff;--danger:#c2361f;--danger-soft:#fbe9e5;
   --p-urgente:#c2361f;--p-alta:#d1740c;--p-media:#2f5bd3;--p-baixa:#7a766e;
-  --ok:#1d7a46;--warn:#a15c00;--shadow:0 1px 2px rgba(0,0,0,.05),0 2px 8px rgba(0,0,0,.04);
+  --ok:#1d7a46;--warn:#a15c00;--warn-soft:#fbf0dc;--shadow:0 1px 2px rgba(0,0,0,.05),0 2px 8px rgba(0,0,0,.04);
 }
 @media (prefers-color-scheme:dark){:root{
   --bg:#141414;--surface:#1d1d1c;--surface-2:#262624;--text:#ecebe8;--muted:#a19d95;--border:#33322f;
-  --accent:#7d9cf0;--accent-text:#0d1430;--danger:#f0806b;
+  --accent:#7d9cf0;--accent-soft:#1f2a47;--accent-text:#0d1430;--danger:#f0806b;--danger-soft:#3a1d17;
   --p-urgente:#f0806b;--p-alta:#f0a85a;--p-media:#7d9cf0;--p-baixa:#a19d95;
-  --ok:#5cc88b;--warn:#e7b35a;--shadow:none;
+  --ok:#5cc88b;--warn:#e7b35a;--warn-soft:#352812;--shadow:none;color-scheme:dark;
 }}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .wrap{max-width:960px;margin:0 auto;padding:calc(28px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(64px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
-.head-actions{display:flex;gap:8px;flex-wrap:wrap}
-@media (display-mode:standalone){body{-webkit-user-select:none;user-select:none}input,textarea,.desc,.result,.title{-webkit-user-select:text;user-select:text}}
+@media (display-mode:standalone){body{-webkit-user-select:none;user-select:none}input,textarea,.desc,.result,.title,.cmt-text{-webkit-user-select:text;user-select:text}}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.head-actions{display:flex;gap:8px;flex-wrap:wrap}
 h1{font-size:22px;margin:0;letter-spacing:-.01em}
+h2{font-size:16px;margin:0}
 .sub{color:var(--muted);font-size:13px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
 .stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;box-shadow:var(--shadow)}
 .stat b{display:block;font-size:22px;font-variant-numeric:tabular-nums}
 .stat span{color:var(--muted);font-size:12px}
+.stat.alert b{color:var(--danger)}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow);margin-bottom:20px}
-form.add{display:grid;grid-template-columns:1fr 140px auto;gap:8px}
-form.add textarea{grid-column:1/-1}
+.templates{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px;scrollbar-width:thin}
+.templates span{font-size:12px;color:var(--muted);align-self:center;white-space:nowrap;margin-right:2px}
+.tpl{white-space:nowrap;font-size:13px;padding:5px 11px;border-radius:999px;background:var(--accent-soft);border-color:transparent;color:var(--accent);font-weight:600}
+form.add{display:grid;grid-template-columns:1fr 130px 150px auto;gap:8px}
+form.add .full{grid-column:1/-1}
+.more{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.repeat{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.repeat select,.repeat input{width:auto}
+.repeat .lbl{font-size:13px;color:var(--muted)}
 input,select,textarea{font:inherit;color:var(--text);background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:9px 11px;width:100%}
 textarea{min-height:64px;resize:vertical}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
 button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);padding:8px 14px}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 button.primary{background:var(--accent);color:var(--accent-text);border-color:transparent;font-weight:600}
 button.ghost{border-color:transparent;background:transparent;color:var(--muted);padding:6px 8px}
 button.ghost:hover{background:var(--surface-2);color:var(--text)}
 button.danger{color:var(--danger)}
+button.now{color:var(--accent);font-weight:600}
 button:disabled{opacity:.6;cursor:wait}
-.toolbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.toolbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;align-items:center}
+.search{flex:1 1 220px;min-width:0}
 .chip{border-radius:999px;padding:5px 12px;font-size:13px}
 .chip[aria-pressed=true]{background:var(--text);color:var(--bg);border-color:var(--text)}
+.tagbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tagchip{font-size:12px;padding:3px 10px;border-radius:999px}
+.tagchip[aria-pressed=true]{background:var(--accent);color:var(--accent-text);border-color:var(--accent)}
 ul.list{list-style:none;margin:0;padding:0}
-li.task{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;padding:12px 4px;border-top:1px solid var(--border)}
+li.task{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;padding:14px 4px;border-top:1px solid var(--border);scroll-margin-top:16px}
 li.task:first-child{border-top:0}
+li.task.flash{animation:flash 2s ease-out}
+@keyframes flash{0%{background:var(--accent-soft)}100%{background:transparent}}
+@media (prefers-reduced-motion:reduce){li.task.flash{animation:none;background:var(--accent-soft)}}
+.task > div{min-width:0}
 .check{width:20px;height:20px;margin-top:2px;accent-color:var(--ok);cursor:pointer}
 .title{font-weight:600;word-break:break-word}
 .done .title{text-decoration:line-through;color:var(--muted)}
 .desc{color:var(--muted);font-size:14px;white-space:pre-wrap;word-break:break-word;margin-top:2px}
-.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;font-size:12px;color:var(--muted)}
-.badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:1px 8px;border-radius:999px;border:1px solid currentColor}
+.meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;font-size:12px;color:var(--muted);align-items:center}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:1px 8px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
 .badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.badge.plain::before{display:none}
 .p-urgente{color:var(--p-urgente)}.p-alta{color:var(--p-alta)}.p-media{color:var(--p-media)}.p-baixa{color:var(--p-baixa)}
 .s-concluida{color:var(--ok)}.s-bloqueada{color:var(--warn)}.s-em_andamento{color:var(--accent)}.s-pendente{color:var(--muted)}
-.result{margin-top:8px;padding:8px 10px;border-left:3px solid var(--ok);background:var(--surface-2);border-radius:0 6px 6px 0;font-size:13px;white-space:pre-wrap;word-break:break-word}
+.due-late{color:var(--danger);background:var(--danger-soft)}.due-soon{color:var(--warn);background:var(--warn-soft)}.due-ok{color:var(--muted)}
+.runnow{color:var(--accent);background:var(--accent-soft)}
+.tag{font-size:12px;color:var(--accent)}
+.result{margin-top:8px;padding:8px 12px;border-left:3px solid var(--ok);background:var(--surface-2);border-radius:0 6px 6px 0;font-size:14px;word-break:break-word;max-height:420px;overflow:auto}
 .result.blocked{border-left-color:var(--warn)}
-.actions{display:flex;gap:2px;flex-wrap:wrap}
+.result.collapsed{max-height:140px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
+.result p{margin:0 0 8px}.result h2,.result h3,.result h4,.result h5{margin:12px 0 6px;font-size:15px}.result ul,.result ol{margin:0 0 8px;padding-left:20px}
+.md-table{overflow-x:auto;margin:0 0 10px}.result table{border-collapse:collapse;font-size:13px;min-width:100%}.result th,.result td{border:1px solid var(--border);padding:4px 6px;text-align:left;vertical-align:top}
+.result blockquote{margin:0 0 8px;padding:6px 10px;border-left:3px solid var(--accent);background:var(--surface)}.result a{color:var(--accent);word-break:break-all}
+.result pre{overflow-x:auto}
+.morebtn{font-size:13px;color:var(--accent);padding:2px 0;border:0;background:none;margin-top:4px}
+.actions{display:flex;gap:2px;flex-wrap:wrap;justify-content:flex-end}
 .files{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .file{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);max-width:100%}
 .file-open{border:0;background:transparent;padding:7px 10px;display:inline-flex;gap:6px;align-items:center;font-weight:600;min-width:0;text-align:left}
@@ -74,26 +104,47 @@ li.task:first-child{border-top:0}
 .file-open small{color:var(--muted);font-weight:400}
 .file-del{padding:4px 9px;border-left:1px solid var(--border);border-radius:0 8px 8px 0;color:var(--muted)}
 .file-open:hover{color:var(--accent)}
+details.thread{margin-top:8px}
+details.thread summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);list-style:none}
+details.thread summary::-webkit-details-marker{display:none}
+.cmts{display:flex;flex-direction:column;gap:8px;margin:8px 0}
+.cmt{max-width:88%;padding:7px 11px;border-radius:12px;font-size:14px}
+.cmt.voce{align-self:flex-end;background:var(--accent);color:var(--accent-text);border-bottom-right-radius:4px}
+.cmt.agente{align-self:flex-start;background:var(--surface-2);border-bottom-left-radius:4px}
+.cmt small{display:block;font-size:11px;opacity:.75;margin-top:2px}
+.cmt-text{white-space:pre-wrap;word-break:break-word}
+form.cmt-form{display:flex;gap:6px}
+form.cmt-form textarea{min-height:42px;flex:1}
 .empty{color:var(--muted);text-align:center;padding:28px 0}
-details summary{cursor:pointer;font-weight:600}
+details.box summary{cursor:pointer;font-weight:600}
 .log{font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);max-height:260px;overflow:auto;margin-top:10px;white-space:pre-wrap;word-break:break-word}
-dialog{border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);padding:20px;width:min(520px,calc(100vw - 32px))}
+.rules{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.rules li{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--border);border-radius:10px}
+.rules li > div{min-width:0}
+.rules b{display:block}
+.rules small{color:var(--muted)}
+dialog{border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);padding:20px;width:min(540px,calc(100vw - 32px))}
 dialog::backdrop{background:rgba(0,0,0,.4)}
 dialog form{display:grid;gap:10px}
 dialog label{font-size:13px;color:var(--muted);display:grid;gap:4px}
+dialog p{margin:0;color:var(--muted);font-size:14px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.end{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
-.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:9px 16px;border-radius:8px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100vw - 32px)}
+.end{display:flex;justify-content:flex-end;gap:8px;margin-top:6px;flex-wrap:wrap}
+.linkbox{display:flex;gap:6px}
+.linkbox input{font-size:13px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--text);color:var(--bg);padding:9px 16px;border-radius:8px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100vw - 32px);z-index:10}
 .toast.show{opacity:1}
 @media (max-width:640px){
   .stats{grid-template-columns:repeat(4,1fr);gap:6px}
   .stat{padding:8px 6px;text-align:center}
   .stat b{font-size:18px}
   .stat span{font-size:11px;line-height:1.2;display:block}
-  form.add{grid-template-columns:1fr}
-  .row{grid-template-columns:1fr}
+  form.add{grid-template-columns:1fr 1fr}
+  form.add input[name=title]{grid-column:1/-1}
+  form.add button.primary{grid-column:1/-1}
+  .more,.row{grid-template-columns:1fr}
   li.task{grid-template-columns:auto 1fr}
-  .actions{grid-column:2}
+  .actions{grid-column:2;justify-content:flex-start}
 }
 </style>
 </head>
@@ -106,6 +157,7 @@ dialog label{font-size:13px;color:var(--muted);display:grid;gap:4px}
     </div>
     <div class="head-actions">
       <button id="install" class="primary" hidden>Instalar app</button>
+      <button id="bell" hidden>🔔 Avisos</button>
       <button id="sync" hidden title="Puxa o trabalho do agente e envia suas mudanças">⟳ Sincronizar com GitHub</button>
     </div>
   </header>
@@ -113,26 +165,57 @@ dialog label{font-size:13px;color:var(--muted);display:grid;gap:4px}
   <div class="stats" id="stats"></div>
 
   <section class="card">
+    <div class="templates" id="templates"></div>
     <form class="add" id="add">
-      <input name="title" placeholder="Nova tarefa…" required maxlength="200" aria-label="Título">
-      <select name="priority" aria-label="Prioridade">
+      <input name="title" id="add-title" placeholder="Nova tarefa…" required maxlength="200" aria-label="Título">
+      <select name="priority" id="add-priority" aria-label="Prioridade">
         <option value="urgente">Urgente</option>
         <option value="alta">Alta</option>
         <option value="media" selected>Média</option>
         <option value="baixa">Baixa</option>
       </select>
+      <input name="due_date" id="add-due" type="date" aria-label="Prazo" title="Prazo (opcional)">
       <button class="primary">Adicionar</button>
-      <textarea name="description" placeholder="Detalhes para o agente: o que fazer, onde salvar o resultado, critério de pronto (opcional)"></textarea>
+      <textarea class="full" name="description" id="add-desc" placeholder="Detalhes para o agente: o que fazer, para quem, como você quer receber (opcional)"></textarea>
+      <div class="more full cloud-only">
+        <input name="tags" id="add-tags" placeholder="Etiquetas, separadas por vírgula (ex.: vendas, estudos)" aria-label="Etiquetas">
+        <div class="repeat">
+          <span class="lbl">Repetir:</span>
+          <select name="freq" id="add-freq" aria-label="Repetir">
+            <option value="">Não repetir</option>
+            <option value="diaria">Todo dia</option>
+            <option value="semanal">Toda semana</option>
+            <option value="mensal">Todo mês</option>
+          </select>
+          <select name="dow" id="add-dow" aria-label="Dia da semana" hidden>
+            <option value="1">segunda</option><option value="2">terça</option><option value="3">quarta</option>
+            <option value="4">quinta</option><option value="5">sexta</option><option value="6">sábado</option><option value="0">domingo</option>
+          </select>
+          <select name="dom" id="add-dom" aria-label="Dia do mês" hidden></select>
+          <select name="hour" id="add-hour" aria-label="Hora" hidden></select>
+        </div>
+      </div>
     </form>
   </section>
 
   <section class="card">
+    <div class="toolbar">
+      <input type="search" class="search" id="search" placeholder="🔎 Buscar tarefas…" aria-label="Buscar">
+    </div>
     <div class="toolbar" id="filters"></div>
+    <div class="tagbar" id="tagbar"></div>
     <ul class="list" id="list"></ul>
   </section>
 
+  <section class="card cloud-only">
+    <details class="box" id="rulesbox"><summary>🔁 Tarefas que se repetem</summary>
+      <p class="sub" style="margin:6px 0 0">O painel cria essas tarefas sozinho no dia e hora marcados. Para criar uma nova, use "Repetir" ao adicionar uma tarefa.</p>
+      <ul class="rules" id="rules"></ul>
+    </details>
+  </section>
+
   <section class="card">
-    <details id="logbox"><summary>Atividade (tasks.log)</summary><div class="log" id="log"></div></details>
+    <details class="box" id="logbox"><summary>Atividade</summary><div class="log" id="log"></div></details>
   </section>
 </div>
 
@@ -149,6 +232,10 @@ dialog label{font-size:13px;color:var(--muted);display:grid;gap:4px}
         <select name="status"><option value="pendente">Pendente</option><option value="em_andamento">Em andamento</option><option value="concluida">Concluída</option><option value="bloqueada">Bloqueada</option></select>
       </label>
     </div>
+    <div class="row cloud-only">
+      <label>Prazo <input name="due_date" type="date"></label>
+      <label>Etiquetas <input name="tags" placeholder="vendas, estudos"></label>
+    </div>
     <label>Resultado / o que foi feito <textarea name="result"></textarea></label>
     <div class="end">
       <button value="cancel" formnovalidate>Cancelar</button>
@@ -156,6 +243,41 @@ dialog label{font-size:13px;color:var(--muted);display:grid;gap:4px}
     </div>
   </form>
 </dialog>
+
+<dialog id="share">
+  <form method="dialog" id="shareForm">
+    <strong>Compartilhar com cliente</strong>
+    <p>Quem tiver este link vê o título, o resultado e os arquivos desta tarefa. Não precisa de senha e não dá acesso ao resto do painel.</p>
+    <div class="linkbox"><input id="share-url" readonly aria-label="Link"><button type="button" id="share-copy">Copiar</button></div>
+    <div class="end">
+      <button type="button" class="danger" id="share-off">Desativar link</button>
+      <button type="button" id="share-wa">WhatsApp</button>
+      <button type="button" id="share-native" hidden>Compartilhar…</button>
+      <button value="close" class="primary">Fechar</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="pushdlg">
+  <form method="dialog">
+    <strong>🔔 Avisos no celular</strong>
+    <p id="push-status"></p>
+    <div class="end">
+      <button type="button" class="danger" id="push-off" hidden>Desligar</button>
+      <button type="button" id="push-test" hidden>Enviar teste</button>
+      <button type="button" class="primary" id="push-on" hidden>Ativar avisos</button>
+      <button value="close">Fechar</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="confirm">
+  <form method="dialog">
+    <p id="confirm-text" style="color:var(--text)"></p>
+    <div class="end"><button value="no">Cancelar</button><button value="yes" class="primary" id="confirm-yes">Confirmar</button></div>
+  </form>
+</dialog>
+
 <dialog id="login">
   <form method="dialog" id="loginForm">
     <strong>Entrar no painel</strong>
@@ -170,15 +292,45 @@ dialog label{font-size:13px;color:var(--muted);display:grid;gap:4px}
 const P = {urgente:"Urgente", alta:"Alta", media:"Média", baixa:"Baixa"};
 const S = {pendente:"Pendente", em_andamento:"Em andamento", concluida:"Concluída", bloqueada:"Bloqueada"};
 const FILTERS = [["abertas","Abertas"],["todas","Todas"],["concluida","Concluídas"],["bloqueada","Bloqueadas"]];
-let tasks = [], filter = "abertas", editing = null, token = "";
+const TEMPLATES = [
+  {name:"Proposta", title:"Proposta para [nome da loja]", priority:"alta", tags:"vendas, proposta",
+   description:"Monte uma proposta curta para enviar pelo WhatsApp para [nome da loja] ([segmento], [cidade]). Pacote: [Presença Google / Landing Page / Site]. Inclua o que está incluso, preço, prazo de entrega e o próximo passo. Entregue o texto pronto para copiar e um PDF de 1 página anexado."},
+  {name:"Site demonstração", title:"Site de demonstração: [segmento]", priority:"alta", tags:"vendas, site",
+   description:"Crie uma landing page de demonstração para um(a) [segmento] fictício(a) em [cidade], com fotos ilustrativas, produtos/serviços, botão de WhatsApp, mapa e horário. Entregue o arquivo HTML e um print em PNG anexados."},
+  {name:"Pesquisar empresas", title:"Pesquisar empresas: [segmento] em [cidade]", priority:"media", tags:"pesquisa, vendas",
+   description:"Liste empresas de [segmento] em [cidade] com nome, endereço, contato público e se têm site ou Instagram. Marque as que não têm site como prioridade. Entregue uma tabela e um PDF anexado."},
+  {name:"Mensagem WhatsApp", title:"Mensagem de retorno para [nome da loja]", priority:"alta", tags:"vendas, whatsapp",
+   description:"Escreva 3 versões curtas de mensagem de retorno para [nome da loja], que [ficou de pensar / pediu preço / não respondeu]. Tom educado e direto, pronto para copiar."},
+  {name:"Posts Instagram", title:"Posts de Instagram: [tema]", priority:"media", tags:"instagram, marketing",
+   description:"Crie 5 ideias de post para o meu Instagram de criação de sites sobre [tema]. Para cada uma: legenda, ideia de imagem e 5 hashtags."},
+  {name:"Estudo", title:"Me explique: [assunto]", priority:"baixa", tags:"estudos",
+   description:"Explique [assunto] de forma simples, com exemplos, e faça um resumo em PDF de até 2 páginas anexado."},
+];
+let tasks = [], rules = [], filter = "abertas", tagFilter = "", query = "", editing = null, token = "", today = "";
+let cloudMode = false, attachTo = null, shareTask = null;
+const openThreads = new Set(), expanded = new Set();
 try { token = localStorage.getItem("token") || ""; } catch (e) {}
 try { filter = localStorage.getItem("filter") || filter; } catch (e) {}
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt = iso => iso ? new Date(iso).toLocaleString("pt-BR", {dateStyle:"short", timeStyle:"short"}) : "";
+const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+const fmtSize = n => n < 1024 ? n + " B" : n < 1048576 ? Math.round(n / 1024) + " KB" : (n / 1048576).toFixed(1) + " MB";
+const fileIcon = m => m === "application/pdf" ? "📄" : m.startsWith("image/") ? "🖼️" : "📎";
+const tagsOf = t => (t.tags || "").split(",").filter(Boolean);
+const plainHtml = s => `<p>${esc(s).replace(/\n/g, "<br>")}</p>`;
+const renderMd = s => { try { return window.md ? window.md(s) : plainHtml(s); } catch (e) { return plainHtml(s); } };
 
-function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),2600); }
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),3000); }
+
+function ask(text, yesLabel = "Confirmar"){
+  return new Promise(res => {
+    const d = $("#confirm"); $("#confirm-text").textContent = text; $("#confirm-yes").textContent = yesLabel;
+    d.addEventListener("close", () => res(d.returnValue === "yes"), {once:true});
+    d.returnValue = ""; d.showModal();
+  });
+}
 
 async function api(method, path, body){
   const headers = {"Content-Type":"application/json"};
@@ -205,9 +357,15 @@ $("#login").addEventListener("close", () => {
 async function init(){
   try {
     const cfg = await api("GET", "/api/config");
-    $("#sync").hidden = cfg.mode !== "local";
     cloudMode = cfg.mode === "cloud";
+    today = cfg.today || new Date().toISOString().slice(0, 10);
+    $("#sync").hidden = cfg.mode !== "local";
+    document.querySelectorAll(".cloud-only").forEach(el => el.hidden = !cloudMode);
+    $("#bell").hidden = !cloudMode;
     await load();
+    if (cloudMode) loadRules().catch(() => {});
+    updateBell();
+    focusHash();
   } catch (e) { if (!$("#login").open) toast("Erro: " + e.message); }
 }
 
@@ -222,21 +380,32 @@ async function loadLog(){
   $("#log").textContent = lines.length ? lines.join("\n") : "Sem atividade ainda.";
 }
 
-function render(){
-  const c = s => tasks.filter(t => t.status === s).length;
-  $("#stats").innerHTML = [["pendente","Pendentes"],["em_andamento","Em andamento"],["concluida","Concluídas"],["bloqueada","Bloqueadas"]]
-    .map(([s,l]) => `<div class="stat"><b>${c(s)}</b><span>${l}</span></div>`).join("");
+function dueInfo(t){
+  if (!t.due_date || t.status === "concluida") return t.due_date ? {cls:"due-ok", txt:"prazo " + t.due_date.split("-").reverse().slice(0,2).join("/")} : null;
+  const d = Math.round((Date.parse(t.due_date) - Date.parse(today)) / 864e5);
+  if (d < 0) return {cls:"due-late", txt: d === -1 ? "atrasada 1 dia" : `atrasada ${-d} dias`};
+  if (d === 0) return {cls:"due-soon", txt:"vence hoje"};
+  if (d === 1) return {cls:"due-soon", txt:"vence amanhã"};
+  return {cls:"due-ok", txt:"até " + t.due_date.split("-").reverse().slice(0,2).join("/")};
+}
 
-  $("#filters").innerHTML = FILTERS.map(([k,l]) =>
-    `<button class="chip" aria-pressed="${k===filter}" data-f="${k}">${l}</button>`).join("");
+function matches(t){
+  if (filter === "abertas" && !(t.status === "pendente" || t.status === "em_andamento")) return false;
+  if (filter !== "abertas" && filter !== "todas" && t.status !== filter) return false;
+  if (tagFilter && !tagsOf(t).includes(tagFilter)) return false;
+  if (query) {
+    const hay = norm([t.title, t.description, t.result, t.tags, ...(t.comments || []).map(c => c.text), ...(t.files || []).map(f => f.name)].join(" "));
+    if (!norm(query).split(/\s+/).every(w => hay.includes(w))) return false;
+  }
+  return true;
+}
 
-  const shown = tasks.filter(t =>
-    filter === "todas" ? true :
-    filter === "abertas" ? (t.status === "pendente" || t.status === "em_andamento") :
-    t.status === filter);
-
-  $("#list").innerHTML = shown.length ? shown.map(t => `
-    <li class="task ${t.status==="concluida"?"done":""}" data-id="${t.id}">
+function taskHtml(t){
+  const due = dueInfo(t);
+  const cmts = t.comments || [];
+  const long = (t.result || "").length > 600;
+  return `
+    <li class="task ${t.status==="concluida"?"done":""}" data-id="${t.id}" id="tarefa-${t.id}">
       <input type="checkbox" class="check" ${t.status==="concluida"?"checked":""} aria-label="Marcar como concluída">
       <div>
         <div class="title">${esc(t.title)}</div>
@@ -244,39 +413,105 @@ function render(){
         <div class="meta">
           <span class="badge p-${t.priority}">${P[t.priority]}</span>
           <span class="badge s-${t.status}">${S[t.status]}</span>
+          ${t.run_now ? `<span class="badge plain runnow">⚡ fazer agora</span>` : ""}
+          ${due ? `<span class="badge plain ${due.cls}">📅 ${due.txt}</span>` : ""}
+          ${t.recurring_id ? `<span title="Criada por uma repetição">🔁</span>` : ""}
+          ${t.share_url ? `<span title="Compartilhada com link">🔗</span>` : ""}
+          ${tagsOf(t).map(g => `<span class="tag">#${esc(g)}</span>`).join("")}
           <span>#${t.id} · criada ${fmt(t.created_at)}${t.completed_at ? " · concluída " + fmt(t.completed_at) : ""}</span>
         </div>
-        ${t.result ? `<div class="result ${t.status==="bloqueada"?"blocked":""}">${esc(t.result)}</div>` : ""}
+        ${t.result ? `<div class="result ${t.status==="bloqueada"?"blocked":""} ${long && !expanded.has(t.id) ? "collapsed" : ""}">${renderMd(t.result)}</div>
+          ${long ? `<button class="morebtn" data-act="expand">${expanded.has(t.id) ? "Mostrar menos" : "Mostrar tudo"}</button>` : ""}` : ""}
         ${t.files && t.files.length ? `<div class="files">${t.files.map(f => `<span class="file"><button class="file-open" data-fid="${f.id}" title="Abrir ${esc(f.name)}">${fileIcon(f.mime)} <span>${esc(f.name)}</span> <small>${fmtSize(f.size)}</small></button><button class="ghost file-del" data-fid="${f.id}" data-name="${esc(f.name)}" aria-label="Remover ${esc(f.name)}">×</button></span>`).join("")}</div>` : ""}
+        ${cloudMode ? `<details class="thread" data-tid="${t.id}" ${openThreads.has(t.id) ? "open" : ""}>
+          <summary>💬 ${cmts.length ? `Conversa (${cmts.length})` : "Falar com o agente"}</summary>
+          ${cmts.length ? `<div class="cmts">${cmts.map(c => `<div class="cmt ${c.author}"><div class="cmt-text">${esc(c.text)}</div><small>${c.author === "agente" ? "Agente" : "Você"} · ${fmt(c.created_at)}</small></div>`).join("")}</div>` : ""}
+          <form class="cmt-form" data-tid="${t.id}"><textarea name="text" placeholder="Ex.: ficou bom, mas faça mais curto" aria-label="Mensagem para o agente" required></textarea><button class="primary">Enviar</button></form>
+        </details>` : ""}
       </div>
       <div class="actions">
-        <button class="ghost" data-act="edit" aria-label="Editar">Editar</button>
-        <button class="ghost" data-act="attach" aria-label="Anexar arquivo" ${cloudMode ? "" : "hidden"}>Anexar</button>
-        <button class="ghost danger" data-act="del" aria-label="Excluir">Excluir</button>
+        <button class="ghost" data-act="edit">Editar</button>
+        ${cloudMode ? `<button class="ghost now" data-act="now" title="Coloca no topo da fila para o agente fazer já">⚡ Fazer agora</button>
+        <button class="ghost" data-act="attach">Anexar</button>
+        <button class="ghost" data-act="share">Compartilhar</button>` : ""}
+        <button class="ghost danger" data-act="del">Excluir</button>
       </div>
-    </li>`).join("") : `<li class="empty">${filter==="abertas" ? "Nenhuma tarefa aberta. Adicione uma acima." : "Nada aqui."}</li>`;
+    </li>`;
 }
+
+function render(){
+  const c = s => tasks.filter(t => t.status === s).length;
+  const late = tasks.filter(t => t.status !== "concluida" && t.due_date && t.due_date < today).length;
+  $("#stats").innerHTML = [["pendente","Pendentes"],["em_andamento","Em andamento"],["concluida","Concluídas"],["bloqueada","Bloqueadas"]]
+    .map(([s,l]) => `<div class="stat ${s==="bloqueada" && c(s) ? "alert" : ""}"><b>${c(s)}</b><span>${l}</span></div>`).join("") ;
+  if (late) $("#stats").querySelector(".stat").insertAdjacentHTML("beforeend", `<span style="color:var(--danger)">${late} atrasada${late>1?"s":""}</span>`);
+
+  $("#filters").innerHTML = FILTERS.map(([k,l]) =>
+    `<button class="chip" aria-pressed="${k===filter}" data-f="${k}">${l}</button>`).join("");
+
+  const allTags = [...new Set(tasks.flatMap(tagsOf))].sort();
+  if (tagFilter && !allTags.includes(tagFilter)) tagFilter = "";
+  $("#tagbar").innerHTML = allTags.length ? allTags.map(g =>
+    `<button class="tagchip" aria-pressed="${g===tagFilter}" data-tag="${esc(g)}">#${esc(g)}</button>`).join("") : "";
+
+  const shown = tasks.filter(matches);
+  $("#list").innerHTML = shown.length ? shown.map(taskHtml).join("") :
+    `<li class="empty">${query || tagFilter ? "Nada encontrado com esse filtro." : filter==="abertas" ? "Nenhuma tarefa aberta. Adicione uma acima." : "Nada aqui."}</li>`;
+}
+
+// ---- Modelos de tarefa ----
+$("#templates").innerHTML = `<span>Modelos:</span>` + TEMPLATES.map((t, i) => `<button type="button" class="tpl" data-i="${i}">${esc(t.name)}</button>`).join("");
+$("#templates").addEventListener("click", e => {
+  const b = e.target.closest(".tpl"); if (!b) return;
+  const t = TEMPLATES[b.dataset.i];
+  $("#add-title").value = t.title; $("#add-priority").value = t.priority;
+  $("#add-desc").value = t.description; $("#add-tags").value = t.tags;
+  const el = $("#add-title"); el.focus();
+  const i = t.title.indexOf("["), j = t.title.indexOf("]");
+  if (i >= 0) el.setSelectionRange(i, j + 1);
+  toast("Troque os trechos entre [colchetes] e toque em Adicionar");
+});
+
+// ---- Repetir ----
+$("#add-dom").innerHTML = Array.from({length:28}, (_, i) => `<option value="${i+1}">dia ${i+1}</option>`).join("");
+$("#add-hour").innerHTML = Array.from({length:24}, (_, h) => `<option value="${h}" ${h===8?"selected":""}>às ${String(h).padStart(2,"0")}h</option>`).join("");
+$("#add-freq").addEventListener("change", () => {
+  const f = $("#add-freq").value;
+  $("#add-dow").hidden = f !== "semanal"; $("#add-dom").hidden = f !== "mensal"; $("#add-hour").hidden = !f;
+  $("#add-due").disabled = !!f;
+});
 
 $("#add").addEventListener("submit", async e => {
   e.preventDefault();
-  const f = new FormData(e.target);
+  const f = Object.fromEntries(new FormData(e.target));
   try {
-    await api("POST", "/api/tasks", Object.fromEntries(f));
-    e.target.reset(); e.target.priority.value = "media"; e.target.title.focus();
-    toast("Tarefa adicionada"); load();
+    if (f.freq) {
+      const r = await api("POST", "/api/recurring", f);
+      toast(`Repetição criada: ${r.when}. A tarefa aparece sozinha no horário.`);
+      loadRules();
+    } else {
+      delete f.freq; delete f.dow; delete f.dom; delete f.hour;
+      await api("POST", "/api/tasks", f);
+      toast("Tarefa adicionada");
+    }
+    e.target.reset(); $("#add-priority").value = "media"; $("#add-freq").dispatchEvent(new Event("change"));
+    load();
   } catch (err) { toast("Erro: " + err.message); }
 });
 
+// ---- Busca e filtros ----
+$("#search").addEventListener("input", e => { query = e.target.value.trim(); render(); });
 $("#filters").addEventListener("click", e => {
   const f = e.target.dataset.f; if (!f) return;
   filter = f; try { localStorage.setItem("filter", f); } catch (e) {}
   render();
 });
+$("#tagbar").addEventListener("click", e => {
+  const g = e.target.dataset.tag; if (g === undefined) return;
+  tagFilter = tagFilter === g ? "" : g; render();
+});
 
-const fmtSize = n => n < 1024 ? n + " B" : n < 1048576 ? Math.round(n / 1024) + " KB" : (n / 1048576).toFixed(1) + " MB";
-const fileIcon = m => m === "application/pdf" ? "📄" : m.startsWith("image/") ? "🖼️" : "📎";
-let cloudMode = false, attachTo = null;
-
+// ---- Arquivos ----
 async function openFile(fid){
   const w = window.open("", "_blank");
   try {
@@ -285,7 +520,6 @@ async function openFile(fid){
     if (w) w.location.href = full; else location.href = full;
   } catch (err) { if (w) w.close(); toast("Erro: " + err.message); }
 }
-
 $("#filepick").addEventListener("change", async e => {
   const f = e.target.files[0]; e.target.value = "";
   if (!f || !attachTo) return;
@@ -300,40 +534,172 @@ $("#filepick").addEventListener("change", async e => {
   } catch (err) { toast("Erro: " + err.message); }
 });
 
+// ---- Compartilhar ----
+async function openShare(t){
+  try {
+    const { url } = await api("POST", `/api/tasks/${t.id}/share`);
+    shareTask = t; $("#share-url").value = url;
+    $("#share-native").hidden = !navigator.share;
+    $("#share").showModal(); load();
+  } catch (err) { toast("Erro: " + err.message); }
+}
+$("#share-copy").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText($("#share-url").value); toast("Link copiado"); }
+  catch (e) { $("#share-url").select(); toast("Selecionado: copie com Ctrl+C"); }
+});
+$("#share-wa").addEventListener("click", () => {
+  const text = `${shareTask.title}: ${$("#share-url").value}`;
+  window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
+});
+$("#share-native").addEventListener("click", () => {
+  navigator.share({ title: shareTask.title, url: $("#share-url").value }).catch(() => {});
+});
+$("#share-off").addEventListener("click", async () => {
+  try { await api("DELETE", `/api/tasks/${shareTask.id}/share`); $("#share").close(); toast("Link desativado"); load(); }
+  catch (err) { toast("Erro: " + err.message); }
+});
+
+// ---- Ações nas tarefas ----
 $("#list").addEventListener("click", async e => {
   const li = e.target.closest("li.task"); if (!li) return;
   const t = tasks.find(x => x.id == li.dataset.id);
   const fo = e.target.closest(".file-open"), fd = e.target.closest(".file-del");
+  const act = e.target.closest("[data-act]")?.dataset.act;
   if (fo) { openFile(fo.dataset.fid); return; }
   if (fd) {
-    if (!confirm(`Remover o arquivo "${fd.dataset.name}"?`)) return;
+    if (!(await ask(`Remover o arquivo "${fd.dataset.name}"?`, "Remover"))) return;
     try { await api("DELETE", `/api/files/${fd.dataset.fid}`); toast("Arquivo removido"); load(); }
     catch (err) { toast("Erro: " + err.message); }
     return;
   }
-  if (e.target.dataset.act === "attach") { attachTo = t.id; $("#filepick").click(); return; }
   if (e.target.classList.contains("check")) {
     try { await api("PUT", `/api/tasks/${t.id}`, {status: e.target.checked ? "concluida" : "pendente"}); load(); }
     catch (err) { toast("Erro: " + err.message); }
-  } else if (e.target.dataset.act === "del") {
-    if (!confirm(`Excluir "${t.title}"?`)) return;
+    return;
+  }
+  if (act === "expand") { expanded.has(t.id) ? expanded.delete(t.id) : expanded.add(t.id); render(); }
+  else if (act === "attach") { attachTo = t.id; $("#filepick").click(); }
+  else if (act === "share") openShare(t);
+  else if (act === "now") {
+    try { await api("POST", `/api/tasks/${t.id}/run-now`); toast("⚡ Na frente da fila. O agente começa em poucos minutos."); load(); }
+    catch (err) { toast("Erro: " + err.message); }
+  } else if (act === "del") {
+    if (!(await ask(`Excluir "${t.title}"? Os arquivos e a conversa dela também serão apagados.`, "Excluir"))) return;
     try { await api("DELETE", `/api/tasks/${t.id}`); toast("Tarefa excluída"); load(); }
     catch (err) { toast("Erro: " + err.message); }
-  } else if (e.target.dataset.act === "edit") {
+  } else if (act === "edit") {
     editing = t;
     const f = $("#editForm");
-    for (const k of ["title","description","priority","status","result"]) f[k].value = t[k] ?? "";
+    for (const k of ["title","description","priority","status","result","due_date"]) f[k].value = t[k] ?? "";
+    f.tags.value = tagsOf(t).join(", ");
     $("#edit").showModal();
   }
+});
+$("#list").addEventListener("toggle", e => {
+  const d = e.target; if (!d.classList || !d.classList.contains("thread")) return;
+  const id = Number(d.dataset.tid); d.open ? openThreads.add(id) : openThreads.delete(id);
+}, true);
+$("#list").addEventListener("submit", async e => {
+  if (!e.target.classList.contains("cmt-form")) return;
+  e.preventDefault();
+  const id = Number(e.target.dataset.tid), text = e.target.text.value.trim();
+  if (!text) return;
+  try {
+    const r = await api("POST", `/api/tasks/${id}/comments`, {text});
+    openThreads.add(id);
+    toast(r.task.status === "pendente" ? "Enviado. A tarefa voltou para a fila e o agente responde na próxima rodada." : "Mensagem enviada");
+    load();
+  } catch (err) { toast("Erro: " + err.message); }
 });
 
 $("#edit").addEventListener("close", async () => {
   if ($("#edit").returnValue !== "save" || !editing) return;
   const body = Object.fromEntries(new FormData($("#editForm")));
+  if (!cloudMode) { delete body.due_date; delete body.tags; }
   try { await api("PUT", `/api/tasks/${editing.id}`, body); toast("Tarefa salva"); load(); }
   catch (err) { toast("Erro: " + err.message); }
   editing = null;
 });
+
+// ---- Repetições ----
+async function loadRules(){
+  rules = await api("GET", "/api/recurring");
+  $("#rules").innerHTML = rules.length ? rules.map(r => `
+    <li data-rid="${r.id}"><div><b>🔁 ${esc(r.title)}</b><small>${esc(r.when)} · próxima: ${fmt(r.next_run)}</small></div>
+    <div><button class="ghost" data-ract="run">Criar agora</button><button class="ghost danger" data-ract="del">Remover</button></div></li>`).join("")
+    : `<li><small>Nenhuma repetição ainda.</small></li>`;
+}
+$("#rules").addEventListener("click", async e => {
+  const b = e.target.closest("[data-ract]"); if (!b) return;
+  const r = rules.find(x => x.id == b.closest("li").dataset.rid);
+  try {
+    if (b.dataset.ract === "run") { await api("POST", `/api/recurring/${r.id}/run`); toast("Tarefa criada"); load(); }
+    else if (await ask(`Parar de repetir "${r.title}"? As tarefas já criadas continuam.`, "Parar")) {
+      await api("DELETE", `/api/recurring/${r.id}`); toast("Repetição removida"); loadRules();
+    }
+  } catch (err) { toast("Erro: " + err.message); }
+});
+$("#rulesbox").addEventListener("toggle", () => { if ($("#rulesbox").open) loadRules().catch(() => {}); });
+
+// ---- Avisos (Web Push) ----
+const pushSupported = () => "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+async function currentSub(){
+  if (!pushSupported()) return null;
+  const reg = await navigator.serviceWorker.getRegistration();
+  return reg ? reg.pushManager.getSubscription() : null;
+}
+async function updateBell(){
+  const sub = await currentSub().catch(() => null);
+  $("#bell").textContent = sub ? "🔔 Avisos ligados" : "🔔 Ativar avisos";
+}
+const b64ToBytes = s => { const b = atob(s.replace(/-/g,"+").replace(/_/g,"/") + "===".slice((s.length+3)%4)); return Uint8Array.from(b, c => c.charCodeAt(0)); };
+async function showPushDialog(){
+  const sub = await currentSub().catch(() => null);
+  const ios = /iphone|ipad/i.test(navigator.userAgent), standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  let msg;
+  if (!pushSupported()) msg = ios && !standalone
+    ? "No iPhone, os avisos só funcionam com o app instalado: no Safari, toque em Compartilhar → Adicionar à Tela de Início, abra pelo ícone e volte aqui."
+    : "Este navegador não aceita avisos. No Android, use o Chrome.";
+  else if (Notification.permission === "denied") msg = "Os avisos estão bloqueados para este app. Libere em Configurações do celular → Apps → Chrome (ou Tarefas) → Notificações.";
+  else if (sub) msg = "Ligados neste aparelho. Você recebe um aviso quando o agente concluir uma tarefa, precisar de você ou responder na conversa.";
+  else msg = "Receba um aviso no celular quando o agente concluir uma tarefa, precisar de você ou responder na conversa.";
+  $("#push-status").textContent = msg;
+  $("#push-on").hidden = !pushSupported() || !!sub || Notification.permission === "denied";
+  $("#push-test").hidden = !sub; $("#push-off").hidden = !sub;
+  if (!$("#pushdlg").open) $("#pushdlg").showModal();
+}
+$("#bell").addEventListener("click", showPushDialog);
+$("#push-on").addEventListener("click", async () => {
+  try {
+    if (await Notification.requestPermission() !== "granted") { toast("Permissão negada"); return showPushDialog(); }
+    const reg = await navigator.serviceWorker.register("/sw.js"); await navigator.serviceWorker.ready;
+    const { key } = await api("GET", "/api/push/key");
+    const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(key) });
+    await api("POST", "/api/push/subscribe", sub.toJSON());
+    toast("Avisos ativados"); updateBell(); showPushDialog();
+  } catch (err) { toast("Não foi possível ativar: " + err.message); }
+});
+$("#push-test").addEventListener("click", async () => {
+  try { const r = await api("POST", "/api/push/test"); toast(r.sent ? "Aviso enviado. Deve chegar em segundos." : "Não consegui enviar. Tente desligar e ativar de novo."); }
+  catch (err) { toast("Erro: " + err.message); }
+});
+$("#push-off").addEventListener("click", async () => {
+  try {
+    const sub = await currentSub();
+    if (sub) { await api("POST", "/api/push/unsubscribe", {endpoint: sub.endpoint}); await sub.unsubscribe(); }
+    toast("Avisos desligados neste aparelho"); updateBell(); showPushDialog();
+  } catch (err) { toast("Erro: " + err.message); }
+});
+
+// ---- Abrir tarefa pelo link do aviso (#tarefa-12) ----
+function focusHash(){
+  const m = location.hash.match(/^#tarefa-(\d+)$/); if (!m) return;
+  const t = tasks.find(x => x.id == m[1]); if (!t) return;
+  if (!matches(t)) { filter = "todas"; tagFilter = ""; query = ""; $("#search").value = ""; render(); }
+  const el = document.getElementById("tarefa-" + m[1]);
+  if (el) { el.scrollIntoView({block:"start"}); el.classList.add("flash"); }
+}
+window.addEventListener("hashchange", focusHash);
 
 $("#sync").addEventListener("click", async e => {
   const b = e.currentTarget; b.disabled = true; b.textContent = "Sincronizando…";
@@ -344,7 +710,7 @@ $("#sync").addEventListener("click", async e => {
 
 $("#logbox").addEventListener("toggle", () => { if ($("#logbox").open) loadLog(); });
 
-// App instalável (PWA)
+// ---- App instalável (PWA) ----
 let installEvt = null;
 window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; $("#install").hidden = false; });
 $("#install").addEventListener("click", async () => {
@@ -358,10 +724,11 @@ window.addEventListener("appinstalled", () => { $("#install").hidden = true; });
 if ("serviceWorker" in navigator && location.protocol === "https:") {
   navigator.serviceWorker.register("/sw.js").catch(() => {});
 }
-document.addEventListener("visibilitychange", () => { if (!document.hidden && !$("#login").open) load().catch(() => {}); });
+const busy = () => $("#login").open || $("#edit").open || document.activeElement?.closest?.(".cmt-form, form.add");
+document.addEventListener("visibilitychange", () => { if (!document.hidden && !busy()) load().catch(() => {}); });
 
 init();
-setInterval(() => { if (!$("#login").open) load().catch(() => {}); }, 30000);
+setInterval(() => { if (!busy()) load().catch(() => {}); }, 30000);
 </script>
 </body>
 </html>

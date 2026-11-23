@@ -12,3 +12,7 @@ rules = [
 binding = "DB"
 database_name = "painel-tarefas"
 database_id = "3a6194d6-9ec6-4fb2-bc61-b793f55edd14"
+
+# Cria as tarefas que se repetem (a cada 10 minutos)
+[triggers]
+crons = ["*/10 * * * *"]

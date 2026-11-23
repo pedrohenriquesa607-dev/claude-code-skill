@@ -13,6 +13,10 @@ os arquivos locais). Senão, usa tasks/tasks.json e tasks/tasks.log.
   tasks_cli.py block <id> "<motivo>"    status -> bloqueada
   tasks_cli.py log "<mensagem>"
   tasks_cli.py attach <id> <arquivo>    anexa um arquivo (PDF, imagem…) à tarefa no painel (máx. 1,9 MB)
+  tasks_cli.py comment <id> "<texto>"   responde ao usuário na conversa da tarefa
+  tasks_cli.py history [dias]           atividade dos últimos N dias (padrão 7)
+  tasks_cli.py wait-now [minutos]       plantão: espera até aparecer tarefa "fazer agora"
+                                        (sai 0) ou até passar N minutos (padrão 50; sai 3)
   tasks_cli.py export                   copia tarefas e log do painel para tasks.json / tasks.log
 """
 import json, os, sys, pathlib, urllib.request, urllib.error, urllib.parse
@@ -46,7 +50,8 @@ class Remote:
     def add(self, f): return self.call("POST", "/api/tasks", f)
     def update(self, i, f): return self.call("PUT", f"/api/tasks/{i}", f)
     def log(self, msg): self.call("POST", "/api/log", {"msg": msg})
-    def log_lines(self): return self.call("GET", "/api/log")
+    def log_lines(self, days=0): return self.call("GET", "/api/log" + (f"?days={days}" if days else ""))
+    def comment(self, i, text): return self.call("POST", f"/api/tasks/{i}/comments", {"text": text})
 
     def attach(self, i, path):
         p = pathlib.Path(path)
@@ -81,10 +86,13 @@ def main(a):
     b, c = backend(), a[0]
     if c == "list":
         for t in b.list_tasks():
-            print(f"#{t['id']:<3} {t['priority']:<8} {t['status']:<13} {t['title']}")
+            extra = "".join([" ⚡agora" if t.get("run_now") else "", f" prazo:{t['due_date']}" if t.get("due_date") else "",
+                             f" #{t['tags'].replace(',', ' #')}" if t.get("tags") else "", f" 💬{len(t['comments'])}" if t.get("comments") else ""])
+            print(f"#{t['id']:<3} {t['priority']:<8} {t['status']:<13} {t['title']}{extra}")
     elif c == "next":
-        ts = b.list_tasks()
-        t = next((x for x in ts if x["status"] == "em_andamento"), None) or \
+        ts = b.list_tasks()  # já vem na ordem de trabalho do painel
+        t = next((x for x in ts if x["status"] == "pendente" and x.get("run_now")), None) or \
+            next((x for x in ts if x["status"] == "em_andamento"), None) or \
             next((x for x in ts if x["status"] == "pendente"), None)
         print(json.dumps(t, ensure_ascii=False, indent=2) if t else "")
     elif c == "add":
@@ -92,7 +100,28 @@ def main(a):
                    "description": a[3] if len(a) > 3 else ""})
         print(f"#{t['id']} criada")
     elif c == "start":
-        b.update(int(a[1]), {"status": "em_andamento"})
+        b.update(int(a[1]), {"status": "em_andamento", "run_now": 0} if isinstance(b, Remote) else {"status": "em_andamento"})
+    elif c == "comment":
+        if not isinstance(b, Remote):
+            sys.exit("comment só funciona com o painel publicado")
+        b.comment(int(a[1]), a[2])
+    elif c == "history":
+        if not isinstance(b, Remote):
+            sys.exit("history só funciona com o painel publicado")
+        print("\n".join(reversed(b.log_lines(int(a[1]) if len(a) > 1 else 7))))
+    elif c == "wait-now":
+        import time
+        until = time.time() + 60 * (float(a[1]) if len(a) > 1 else 50)
+        while True:
+            ts = b.list_tasks()
+            hit = [x for x in ts if x["status"] == "pendente" and x.get("run_now")]
+            if hit:
+                print(f"fazer agora: #{hit[0]['id']} {hit[0]['title']}")
+                sys.exit(0)
+            if time.time() >= until:
+                print("plantão encerrado sem pedidos")
+                sys.exit(3)
+            time.sleep(max(1, min(60, until - time.time())))
     elif c == "complete":
         b.update(int(a[1]), {"status": "concluida", "result": a[2]})
         b.log(f"concluída #{a[1]}: {a[2][:300]}")
