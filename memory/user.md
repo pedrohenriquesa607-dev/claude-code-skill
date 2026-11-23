@@ -21,6 +21,8 @@ Quem é o usuário e em que contexto ele trabalha. Atualize quando algo mudar.
 - Não é desenvolvedor: precisa de instruções simples, passo a passo, uma tela por vez. (2026-11-22)
 
 ## Ideias para o futuro
+- Marca **NexCode** (2026-11-23): nome escolhido para o trabalho com sites. Não quer trocar o subdomínio
+  da Cloudflare (pedrohenriquesa607) para não quebrar links de clientes; alternativa: comprar domínio próprio.
 - **Painel Agente** (2026-11-23): versão paga do painel para vender (SaaS), separada do painel pessoal.
   Público: todos, começando pelos lojistas da região. Preço pensado: R$ 29,90 e R$ 59,90.
   Plano sugerido: créditos (tarefa simples = 1, completa = 5); Básico 40 créditos, Pro 90.

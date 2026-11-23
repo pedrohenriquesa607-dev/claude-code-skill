@@ -1,5 +1,5 @@
 # Sites e demonstrações da NexCode. Cada site fica em public/<nome>/ e abre em
-# https://sites.nexcode.workers.dev/<nome>/  (a Cloudflare publica sozinha a cada push).
+# https://sites.pedrohenriquesa607.workers.dev/<nome>/  (a Cloudflare publica sozinha a cada push).
 name = "sites"
 compatibility_date = "2025-06-01"
 workers_dev = true

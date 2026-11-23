@@ -93,8 +93,9 @@ scripts/add_decision.sh "decisão" "raciocínio" "resultado esperado"
 
 - Pasta `sites/` (Worker `sites`, publicado pela Cloudflare a cada push na branch
   padrão): cada site em `sites/public/<nome>/`, endereço
-  https://sites.nexcode.workers.dev/<nome>/. Roteiro do agente: `sites/SITES.md`.
-- Subdomínio da Cloudflare: `nexcode` (antes `pedrohenriquesa607`).
+  https://sites.pedrohenriquesa607.workers.dev/<nome>/. Roteiro do agente: `sites/SITES.md`.
+- Subdomínio da Cloudflare continua `pedrohenriquesa607` (trocar quebraria links de clientes).
+  Para esconder esse nome nos sites, o caminho é um domínio próprio (ideia: nexcode).
 
 ### Ao final de cada sessão (ou ao concluir uma tarefa relevante)
 
