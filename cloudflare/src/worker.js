@@ -145,9 +145,31 @@ async function vapidKeys(env) {
   if (!v) { v = await newVapidKeys(); await setSetting(env, "vapid", v); }
   return v;
 }
+// Plano B: avisos pelo app ntfy (funciona em celulares que bloqueiam o serviço do Google).
+async function ntfyTopic(env) {
+  let t = await getSetting(env, "ntfy_topic");
+  if (!t) {
+    const abc = "abcdefghijkmnpqrstuvwxyz23456789";
+    t = "nexcode-" + Array.from(crypto.getRandomValues(new Uint8Array(18)), b => abc[b % abc.length]).join("");
+    await setSetting(env, "ntfy_topic", t);
+  }
+  return t;
+}
+async function sendNtfy(env, origin, data) {
+  if (!(await getSetting(env, "ntfy_on"))) return null;
+  const r = await fetch("https://ntfy.sh/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ topic: await ntfyTopic(env), title: data.title, message: data.body || data.title,
+      click: new URL(data.url || "/", origin).href, priority: 4 }),
+  });
+  return r.ok;
+}
+
 async function notify(env, origin, data) {
+  const viaNtfy = await sendNtfy(env, origin, data).catch(() => false);
   const { results } = await env.DB.prepare("SELECT * FROM push_subs").all();
-  if (!results.length) return { sent: 0, failed: 0 };
+  if (!results.length) return { sent: viaNtfy ? 1 : 0, failed: 0, ntfy: viaNtfy };
   const vapid = await vapidKeys(env);
   let sent = 0, failed = 0;
   for (const s of results) {
@@ -158,7 +180,7 @@ async function notify(env, origin, data) {
       else failed++;
     } catch (_) { failed++; }
   }
-  return { sent, failed };
+  return { sent: sent + (viaNtfy ? 1 : 0), failed, ntfy: viaNtfy };
 }
 
 // ---------- Arquivos anexados às tarefas (guardados no D1) ----------
@@ -515,6 +537,15 @@ async function api(req, env, url, ctx) {
   if (path === "/api/push/unsubscribe" && m === "POST") {
     await env.DB.prepare("DELETE FROM push_subs WHERE endpoint = ?").bind(String((await req.json()).endpoint || "")).run();
     return json({ ok: true });
+  }
+  if (path === "/api/ntfy" && m === "GET") {
+    return json({ topic: await ntfyTopic(env), on: !!(await getSetting(env, "ntfy_on")) });
+  }
+  if (path === "/api/ntfy" && m === "POST") {
+    const on = !!(await req.json()).on;
+    await setSetting(env, "ntfy_on", on);
+    await log(env, actor, on ? "avisos pelo ntfy ligados" : "avisos pelo ntfy desligados");
+    return json({ topic: await ntfyTopic(env), on });
   }
   if (path === "/api/push/test" && m === "POST") {
     return json(await notify(env, url.origin, { title: "Avisos funcionando", body: "Você vai ser avisado quando o NexCode Agente terminar ou precisar de você.", url: "/" }));
