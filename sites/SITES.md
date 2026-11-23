@@ -7,7 +7,10 @@
    - Botão de WhatsApp (`https://wa.me/55DDDNUMERO?text=...`) só com o número que a tarefa informar;
      sem número, use um marcador visível "[WhatsApp]" e avise no resultado.
    - Imagens: exporte do Canva (PNG/JPG) e salve na pasta; cada arquivo com menos de 1,9 MB.
-   - Coloque `<meta name="robots" content="noindex">` em sites de demonstração.
+   - **Site demonstração** (loja fictícia para mostrar a clientes): nome começando com `demo-`
+     (ex.: `demo-farmacia`), `<meta name="robots" content="noindex">`, dados de exemplo claramente
+     fictícios e um aviso discreto no rodapé "Site de demonstração NexCode".
+   - **Site de cliente real**: só com os dados que a tarefa trouxer; sem `noindex`.
    - Nada de dados pessoais do usuário (e-mail, endereço) que a tarefa não pediu.
 3. Publique (não depende do GitHub): `python3 tasks/tasks_cli.py site-publish <nome> /tmp/site-<nome>`.
    Para atualizar depois, rode de novo com a mesma pasta e o mesmo nome. `site-list` mostra os sites.

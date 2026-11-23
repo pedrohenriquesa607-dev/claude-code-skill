@@ -5,6 +5,7 @@ import HTML from "../../tasks/web/index.html";
 import ICON_192 from "../static/icon-192.png";
 import ICON_512 from "../static/icon-512.png";
 import APPLE_ICON from "../static/apple-touch-icon.png";
+import MOON from "../static/moon.jpg"; // foto: NASA Goddard (domínio público)
 import { md } from "./md.js";
 import { newVapidKeys, sendPush } from "./push.js";
 import { nextRun, describe } from "./recur.js";
@@ -29,8 +30,8 @@ const MANIFEST = JSON.stringify({
 
 // Service worker: guarda só a página e os ícones para abrir rápido (as tarefas, em
 // /api, sempre vêm da internet) e mostra os avisos (push) no celular.
-const SW = `const C = "painel-v3";
-self.addEventListener("install", e => { e.waitUntil(caches.open(C).then(c => c.addAll(["/", "/md.js", "/icon-192.png", "/icon-512.png"]))); self.skipWaiting(); });
+const SW = `const C = "painel-v4";
+self.addEventListener("install", e => { e.waitUntil(caches.open(C).then(c => c.addAll(["/", "/md.js", "/moon.jpg", "/icon-192.png", "/icon-512.png"]))); self.skipWaiting(); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== C).map(k => caches.delete(k))))); self.clients.claim(); });
 self.addEventListener("fetch", e => {
   const u = new URL(e.request.url);
@@ -63,6 +64,7 @@ const STATIC = {
   "/icon-512.png": [ICON_512, "image/png"],
   "/apple-touch-icon.png": [APPLE_ICON, "image/png"],
   "/favicon.ico": [ICON_192, "image/png"],
+  "/moon.jpg": [MOON, "image/jpeg"],
 };
 
 const PRIORITIES = { urgente: 4, alta: 3, media: 2, baixa: 1 };

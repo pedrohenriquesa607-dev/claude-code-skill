@@ -44,15 +44,21 @@ body{margin:0;background:var(--ink);color:var(--text);font:15px/1.55 var(--body)
 .brand{display:flex;align-items:center;gap:10px;font:700 15px/1 var(--display);font-stretch:112%;letter-spacing:.01em}
 .brand img{width:34px;height:34px;border-radius:8px;display:block}
 .head-actions{display:flex;gap:8px;flex-wrap:wrap}
+.head-actions button{background:rgba(3,6,12,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 
 /* abertura */
 .hero{position:relative;padding:56px 0 36px;min-height:280px}
-.planet{position:absolute;z-index:-1;width:min(560px,92vw);aspect-ratio:1;right:-140px;top:-190px;border-radius:50%;
-  background:radial-gradient(circle at 34% 30%,#0d1a30 0%,#060c18 48%,#03060c 70%);
-  box-shadow:inset 18px 14px 34px -10px rgba(22,211,255,.6),inset 60px 40px 90px -40px rgba(29,99,255,.45),-30px -20px 120px -40px rgba(29,99,255,.55);
-  animation:rise 1.4s cubic-bezier(.2,.7,.1,1) both}
-@keyframes rise{from{opacity:0;transform:translateY(40px) scale(.96)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.planet{animation:none}}
+/* Lua real (NASA), meio escondida na borda e "anoitecendo" para a esquerda, como um terminador */
+.moon{position:absolute;z-index:-1;width:min(560px,96vw);height:auto;right:-200px;top:-210px;
+  filter:saturate(.85) contrast(1.05);
+  /* recorte redondo (some a borda quadrada da foto) + sombra do terminador para a esquerda */
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 47.5%,transparent 49.5%),linear-gradient(105deg,transparent 18%,rgba(0,0,0,.35) 34%,#000 52%);
+  -webkit-mask-composite:source-in;
+  mask-image:radial-gradient(circle at 50% 50%,#000 47.5%,transparent 49.5%),linear-gradient(105deg,transparent 18%,rgba(0,0,0,.35) 34%,#000 52%);
+  mask-composite:intersect;
+  animation:rise 1.6s cubic-bezier(.2,.7,.1,1) both;pointer-events:none;user-select:none}
+@keyframes rise{from{opacity:0;transform:translateY(30px) rotate(-6deg)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.moon{animation:none}}
 h1{font:800 clamp(64px,13vw,150px)/.88 var(--display);font-stretch:112%;letter-spacing:-.035em;margin:0;text-wrap:balance}
 .hero .sub{max-width:34ch;margin-top:18px;color:var(--muted);font-size:15px}
 .sub{color:var(--muted);font-size:14px}
@@ -76,6 +82,10 @@ form.add .full{grid-column:1/-1}
 .repeat{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .repeat select,.repeat input{width:auto}
 .repeat .lbl{font-size:14px;color:var(--muted)}
+.attach{display:flex;gap:12px;align-items:center;flex-wrap:wrap;grid-column:1/-1}
+.attach-btn{cursor:pointer;border:1px dashed var(--line-2);border-radius:999px;padding:9px 16px;color:var(--accent);font-weight:600;font-size:14px}
+.attach-btn:hover{border-color:var(--accent)}
+.attach-list{color:var(--muted);font-size:13px;min-width:0;overflow-wrap:anywhere}
 input,select,textarea{font:inherit;color:var(--text);background:var(--panel-2);border:1px solid var(--line-2);border-radius:10px;padding:11px 13px;width:100%}
 input::placeholder,textarea::placeholder{color:var(--dim)}
 textarea{min-height:72px;resize:vertical}
@@ -174,7 +184,7 @@ dialog p{margin:0;color:var(--muted);font-size:14px}
 .toast.show{opacity:1}
 @media (max-width:640px){
   .hero{padding:40px 0 28px;min-height:0}
-  .planet{width:360px;right:-150px;top:-150px}
+  .moon{width:340px;right:-150px;top:-120px}
   .stats{margin-top:26px}
   .stat{padding:12px 8px 2px}
   .stat b{font-size:28px}
@@ -200,7 +210,7 @@ dialog p{margin:0;color:var(--muted);font-size:14px}
   </header>
 
   <section class="hero">
-    <div class="planet" aria-hidden="true"></div>
+    <img class="moon" src="/moon.jpg" alt="" aria-hidden="true" width="960" height="960" decoding="async">
     <h1>Tarefas.</h1>
     <p class="sub">O NexCode Agente trabalha nas pendentes de hora em hora, pela ordem de prioridade.</p>
     <div class="stats" id="stats"></div>
@@ -222,6 +232,11 @@ dialog p{margin:0;color:var(--muted);font-size:14px}
       <textarea class="full" name="description" id="add-desc" placeholder="Detalhes para o NexCode Agente: o que fazer, para quem, como você quer receber (opcional)"></textarea>
       <div class="more full cloud-only">
         <input name="tags" id="add-tags" placeholder="Etiquetas, separadas por vírgula (ex.: vendas, estudos)" aria-label="Etiquetas">
+        <div class="attach full">
+          <label class="attach-btn" for="add-files">Anexar fotos ou arquivos</label>
+          <input type="file" id="add-files" multiple hidden>
+          <span class="attach-list" id="add-files-list">Fotos, prints, PDFs ou planilhas para o NexCode Agente usar.</span>
+        </div>
         <div class="repeat">
           <span class="lbl">Repetir:</span>
           <select name="freq" id="add-freq" aria-label="Repetir">
@@ -329,7 +344,7 @@ dialog p{margin:0;color:var(--muted);font-size:14px}
     <div class="end"><button class="primary" value="ok">Entrar</button></div>
   </form>
 </dialog>
-<input type="file" id="filepick" hidden>
+<input type="file" id="filepick" multiple hidden>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -341,6 +356,8 @@ const TEMPLATES = [
    description:"Monte uma proposta curta para enviar pelo WhatsApp para [nome da loja] ([segmento], [cidade]). Pacote: [Presença Google / Landing Page / Site]. Inclua o que está incluso, preço, prazo de entrega e o próximo passo. Entregue o texto pronto para copiar e um PDF de 1 página anexado."},
   {name:"Site", title:"Site: [nome da loja]", priority:"alta", tags:"site, nexcode",
    description:"Crie e publique um site de uma página para [nome da loja] ([segmento] em [cidade]). Inclua: [produtos ou serviços], horário [horário], endereço [endereço], WhatsApp [número com DDD]. Estilo [moderno / simples / colorido]. Use imagens do Canva se precisar. Publique em nexcode e me mande o link e um print do celular."},
+  {name:"Site demonstração", title:"Site demonstração: [segmento]", priority:"alta", tags:"site, demonstração, nexcode",
+   description:"Crie e publique um site de demonstração para um(a) [segmento] fictício(a) em [cidade], para eu mostrar a clientes. Nome fictício da loja: [nome ou deixe o agente escolher]. Inclua produtos ou serviços, horário, mapa e botão de WhatsApp com número de exemplo. Estilo [moderno / simples / colorido]. Publique em nexcode como demonstração e me mande o link e um print do celular."},
   {name:"Pesquisar empresas", title:"Pesquisar empresas: [segmento] em [cidade]", priority:"media", tags:"pesquisa, vendas",
    description:"Liste empresas de [segmento] em [cidade] com nome, endereço, contato público e se têm site ou Instagram. Marque as que não têm site como prioridade. Entregue uma tabela e um PDF anexado."},
   {name:"Mensagem WhatsApp", title:"Mensagem de retorno para [nome da loja]", priority:"alta", tags:"vendas, whatsapp",
@@ -541,10 +558,16 @@ $("#add").addEventListener("submit", async e => {
       loadRules();
     } else {
       delete f.freq; delete f.dow; delete f.dom; delete f.hour;
-      await api("POST", "/api/tasks", f);
-      toast("Tarefa adicionada");
+      const t = await api("POST", "/api/tasks", f);
+      const files = [...$("#add-files").files];
+      let ok = 0;
+      for (const file of files) {
+        toast(`Enviando ${file.name}…`);
+        try { await uploadFile(t.id, file); ok++; } catch (err) { toast("Erro: " + err.message); }
+      }
+      toast(files.length ? `Tarefa adicionada com ${ok} de ${files.length} arquivo${files.length > 1 ? "s" : ""}` : "Tarefa adicionada");
     }
-    e.target.reset(); $("#add-priority").value = "media"; $("#add-freq").dispatchEvent(new Event("change"));
+    e.target.reset(); $("#add-priority").value = "media"; $("#add-freq").dispatchEvent(new Event("change")); $("#add-files").dispatchEvent(new Event("change"));
     load();
   } catch (err) { toast("Erro: " + err.message); }
 });
@@ -562,6 +585,36 @@ $("#tagbar").addEventListener("click", e => {
 });
 
 // ---- Arquivos ----
+const MAX_UP = 1900000;
+// Fotos grandes do celular: reduz para no máx. 2000 px e JPEG até caber no limite.
+async function shrink(file){
+  if (!file.type.startsWith("image/") || file.type === "image/gif" || file.type === "image/svg+xml" || file.size <= MAX_UP) return file;
+  const img = await createImageBitmap(file).catch(() => null);
+  if (!img) return file;
+  let side = 2000, q = .85, blob = null;
+  for (let i = 0; i < 6; i++) {
+    const k = Math.min(1, side / Math.max(img.width, img.height));
+    const c = document.createElement("canvas"); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+    c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+    blob = await new Promise(r => c.toBlob(r, "image/jpeg", q));
+    if (blob && blob.size <= MAX_UP) break;
+    side = Math.round(side * .8); q = Math.max(.6, q - .07);
+  }
+  return blob ? new File([blob], file.name.replace(/\.[^.]+$/, "") + ".jpg", {type:"image/jpeg"}) : file;
+}
+async function uploadFile(taskId, original){
+  const f = await shrink(original);
+  if (f.size > MAX_UP) throw new Error(`"${original.name}" é grande demais (máximo 1,9 MB)`);
+  const r = await fetch(`/api/tasks/${taskId}/files?name=${encodeURIComponent(f.name)}`, {method:"POST", headers:{Authorization:"Bearer " + token}, body:f});
+  const d = await r.json().catch(() => ({}));
+  if (r.status === 401) { askLogin(); throw new Error("faça login"); }
+  if (!r.ok) throw new Error(d.error || r.statusText);
+  return d;
+}
+$("#add-files").addEventListener("change", e => {
+  const n = e.target.files.length;
+  $("#add-files-list").textContent = n ? [...e.target.files].map(f => f.name).join(", ") : "Fotos, prints, PDFs ou planilhas para o NexCode Agente usar.";
+});
 async function openFile(fid){
   const w = window.open("", "_blank");
   try {
@@ -571,17 +624,14 @@ async function openFile(fid){
   } catch (err) { if (w) w.close(); toast("Erro: " + err.message); }
 }
 $("#filepick").addEventListener("change", async e => {
-  const f = e.target.files[0]; e.target.value = "";
-  if (!f || !attachTo) return;
-  if (f.size > 1900000) { toast("Arquivo grande demais (máximo 1,9 MB)"); return; }
-  toast("Enviando " + f.name + "…");
-  try {
-    const r = await fetch(`/api/tasks/${attachTo}/files?name=${encodeURIComponent(f.name)}`, {method:"POST", headers:{Authorization:"Bearer " + token}, body:f});
-    const d = await r.json().catch(() => ({}));
-    if (r.status === 401) { askLogin(); return; }
-    if (!r.ok) throw new Error(d.error || r.statusText);
-    toast("Arquivo anexado"); load();
-  } catch (err) { toast("Erro: " + err.message); }
+  const files = [...e.target.files]; e.target.value = "";
+  if (!files.length || !attachTo) return;
+  let ok = 0;
+  for (const f of files) {
+    toast("Enviando " + f.name + "…");
+    try { await uploadFile(attachTo, f); ok++; } catch (err) { toast("Erro: " + err.message); }
+  }
+  if (ok) { toast(ok > 1 ? `${ok} arquivos anexados` : "Arquivo anexado"); load(); }
 });
 
 // ---- Compartilhar ----
