@@ -94,7 +94,7 @@ diga no motivo o que falta.
 
 ## 8. Plantão do "Fazer agora" (depois de finalizar)
 O botão "Fazer agora" do app marca a tarefa e espera um agente acordado.
-- Só entre **07:00 e 23:00 de Brasília** (UTC-3). Fora disso, termine a sessão.
+- Funciona **24 horas por dia** (o usuário pediu em 2026-11-23).
 - Rode o plantão **em segundo plano** (Bash com `run_in_background: true` e
   `timeout` de 3300000 ms), para não gastar nada enquanto espera:
   `python3 tasks/tasks_cli.py wait-now 48`
