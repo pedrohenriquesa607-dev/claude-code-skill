@@ -89,6 +89,13 @@ scripts/add_decision.sh "decisão" "raciocínio" "resultado esperado"
 - Uma tarefa agendada de hora em hora segue `tasks/AGENT.md`: trabalha nas
   pendentes por prioridade, registra o resultado e marca como concluída.
 
+### Sites dos clientes
+
+- Pasta `sites/` (Worker `sites`, publicado pela Cloudflare a cada push na branch
+  padrão): cada site em `sites/public/<nome>/`, endereço
+  https://sites.nexcode.workers.dev/<nome>/. Roteiro do agente: `sites/SITES.md`.
+- Subdomínio da Cloudflare: `nexcode` (antes `pedrohenriquesa607`).
+
 ### Ao final de cada sessão (ou ao concluir uma tarefa relevante)
 
 1. Atualize os arquivos de `memory/` com o que mudou. Edite entradas

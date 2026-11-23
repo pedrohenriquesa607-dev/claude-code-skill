@@ -77,7 +77,9 @@ cópia exportada do painel.
    - Use só o que a tarefa pedir: cada geração gasta créditos de IA do Canva do usuário.
      Não salve nem altere designs antigos do usuário sem a tarefa pedir.
    - Se o Canva falhar (sem créditos, fora do ar), faça com `python-pptx`/PDF e avise no resultado.
-8. Para relatórios (ex.: "Resumo da semana"), use
+8. **Sites:** quando a tarefa pedir um site, landing page ou página de demonstração,
+   siga `sites/SITES.md` (publica em https://sites.nexcode.workers.dev/<nome>/).
+9. Para relatórios (ex.: "Resumo da semana"), use
    `python3 tasks/tasks_cli.py history 7` para ver a atividade dos últimos dias.
 
 ## 4. Quando NÃO fazer — bloquear em vez disso
