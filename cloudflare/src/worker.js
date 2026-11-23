@@ -12,7 +12,7 @@ import { nextRun, describe } from "./recur.js";
 const MANIFEST = JSON.stringify({
   name: "Painel de Tarefas",
   short_name: "Tarefas",
-  description: "Suas tarefas, feitas pelo agente de hora em hora.",
+  description: "Suas tarefas, feitas pelo NexCode Agente de hora em hora.",
   lang: "pt-BR",
   start_url: "/",
   scope: "/",
@@ -346,7 +346,7 @@ async function api(req, env, url, ctx) {
     if (diff.length || extra.length) await log(env, actor, `editada #${tid}` + (diff.length ? ` (${diff.join(", ")})` : "") + (extra.length ? ` [${extra.join(", ")} alterado]` : ""));
     if (actor === "agente" && ch.status && ch.status !== before.status) {
       if (ch.status === "concluida") pushTask(row, "Tarefa concluída", row.title);
-      if (ch.status === "bloqueada") pushTask(row, "O agente precisa de você", row.title);
+      if (ch.status === "bloqueada") pushTask(row, "O NexCode Agente precisa de você", row.title);
     }
     return json(row);
   }
@@ -386,7 +386,7 @@ async function api(req, env, url, ctx) {
       task = await env.DB.prepare("UPDATE tasks SET status = 'pendente', completed_at = NULL, updated_at = ? WHERE id = ? RETURNING *").bind(now(), tid).first();
       await log(env, actor, `reaberta #${tid} pelo comentário`);
     }
-    if (author === "agente") pushTask(t, "O agente respondeu", `${t.title}: ${text.slice(0, 100)}`);
+    if (author === "agente") pushTask(t, "O NexCode Agente respondeu", `${t.title}: ${text.slice(0, 100)}`);
     return json({ comment: c, task }, 201);
   }
 
@@ -476,7 +476,7 @@ async function api(req, env, url, ctx) {
     return json({ ok: true });
   }
   if (path === "/api/push/test" && m === "POST") {
-    return json(await notify(env, url.origin, { title: "Avisos funcionando", body: "Você vai ser avisado quando o agente terminar ou precisar de você.", url: "/" }));
+    return json(await notify(env, url.origin, { title: "Avisos funcionando", body: "Você vai ser avisado quando o NexCode Agente terminar ou precisar de você.", url: "/" }));
   }
 
   // --- Histórico ---
@@ -492,7 +492,7 @@ async function api(req, env, url, ctx) {
       ? await env.DB.prepare("SELECT ts, actor, msg FROM log WHERE ts >= ? ORDER BY id DESC LIMIT 3000")
           .bind(new Date(Date.now() - days * 864e5).toISOString().replace(/\.\d+Z$/, "+00:00")).all()
       : await env.DB.prepare("SELECT ts, actor, msg FROM log ORDER BY id DESC LIMIT 100").all();
-    return json(results.map(r => `${r.ts} [${r.actor}] ${r.msg}`));
+    return json(results.map(r => `${r.ts} [${r.actor === "agente" ? "NexCode Agente" : r.actor}] ${r.msg}`));
   }
   return json({ error: "não encontrado" }, 404);
 }

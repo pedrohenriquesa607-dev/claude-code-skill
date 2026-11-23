@@ -155,7 +155,7 @@ dialog p{margin:0;color:var(--muted);font-size:14px}
   <header>
     <div>
       <h1>Painel de Tarefas</h1>
-      <div class="sub">O agente trabalha nas pendentes de hora em hora, pela ordem de prioridade.</div>
+      <div class="sub">O NexCode Agente trabalha nas pendentes de hora em hora, pela ordem de prioridade.</div>
     </div>
     <div class="head-actions">
       <button id="install" class="primary" hidden>Instalar app</button>
@@ -178,7 +178,7 @@ dialog p{margin:0;color:var(--muted);font-size:14px}
       </select>
       <input name="due_date" id="add-due" type="date" aria-label="Prazo" title="Prazo (opcional)">
       <button class="primary">Adicionar</button>
-      <textarea class="full" name="description" id="add-desc" placeholder="Detalhes para o agente: o que fazer, para quem, como você quer receber (opcional)"></textarea>
+      <textarea class="full" name="description" id="add-desc" placeholder="Detalhes para o NexCode Agente: o que fazer, para quem, como você quer receber (opcional)"></textarea>
       <div class="more full cloud-only">
         <input name="tags" id="add-tags" placeholder="Etiquetas, separadas por vírgula (ex.: vendas, estudos)" aria-label="Etiquetas">
         <div class="repeat">
@@ -432,14 +432,14 @@ function taskHtml(t){
           ${long ? `<button class="morebtn" data-act="expand">${expanded.has(t.id) ? "Mostrar menos" : "Mostrar tudo"}</button>` : ""}` : ""}
         ${t.files && t.files.length ? `<div class="files">${t.files.map(f => `<span class="file"><button class="file-open" data-fid="${f.id}" title="Abrir ${esc(f.name)}">${fileIcon(f.mime)} <span>${esc(f.name)}</span> <small>${fmtSize(f.size)}</small></button><button class="ghost file-del" data-fid="${f.id}" data-name="${esc(f.name)}" aria-label="Remover ${esc(f.name)}">×</button></span>`).join("")}</div>` : ""}
         ${cloudMode ? `<details class="thread" data-tid="${t.id}" ${openThreads.has(t.id) ? "open" : ""}>
-          <summary>${cmts.length ? `Conversa (${cmts.length})` : "Falar com o agente"}</summary>
-          ${cmts.length ? `<div class="cmts">${cmts.map(c => `<div class="cmt ${c.author}"><div class="cmt-text">${esc(c.text)}</div><small>${c.author === "agente" ? "Agente" : "Você"} · ${fmt(c.created_at)}</small></div>`).join("")}</div>` : ""}
-          <form class="cmt-form" data-tid="${t.id}"><textarea name="text" placeholder="Ex.: ficou bom, mas faça mais curto" aria-label="Mensagem para o agente" required></textarea><button class="primary">Enviar</button></form>
+          <summary>${cmts.length ? `Conversa (${cmts.length})` : "Falar com o NexCode Agente"}</summary>
+          ${cmts.length ? `<div class="cmts">${cmts.map(c => `<div class="cmt ${c.author}"><div class="cmt-text">${esc(c.text)}</div><small>${c.author === "agente" ? "NexCode Agente" : "Você"} · ${fmt(c.created_at)}</small></div>`).join("")}</div>` : ""}
+          <form class="cmt-form" data-tid="${t.id}"><textarea name="text" placeholder="Ex.: ficou bom, mas faça mais curto" aria-label="Mensagem para o NexCode Agente" required></textarea><button class="primary">Enviar</button></form>
         </details>` : ""}
       </div>
       <div class="actions">
         <button class="ghost" data-act="edit">Editar</button>
-        ${cloudMode ? `<button class="ghost now" data-act="now" title="Coloca no topo da fila para o agente fazer já">Fazer agora</button>
+        ${cloudMode ? `<button class="ghost now" data-act="now" title="Coloca no topo da fila para o NexCode Agente fazer já">Fazer agora</button>
         <button class="ghost" data-act="attach">Anexar</button>
         <button class="ghost" data-act="share">Compartilhar</button>` : ""}
         <button class="ghost danger" data-act="del">Excluir</button>
@@ -589,7 +589,7 @@ $("#list").addEventListener("click", async e => {
   else if (act === "attach") { attachTo = t.id; $("#filepick").click(); }
   else if (act === "share") openShare(t);
   else if (act === "now") {
-    try { await api("POST", `/api/tasks/${t.id}/run-now`); toast("Na frente da fila. O agente começa em poucos minutos."); load(); }
+    try { await api("POST", `/api/tasks/${t.id}/run-now`); toast("Na frente da fila. O NexCode Agente começa em poucos minutos."); load(); }
     catch (err) { toast("Erro: " + err.message); }
   } else if (act === "del") {
     if (!(await ask(`Excluir "${t.title}"? Os arquivos e a conversa dela também serão apagados.`, "Excluir"))) return;
@@ -615,7 +615,7 @@ $("#list").addEventListener("submit", async e => {
   try {
     const r = await api("POST", `/api/tasks/${id}/comments`, {text});
     openThreads.add(id);
-    toast(r.task.status === "pendente" ? "Enviado. A tarefa voltou para a fila e o agente responde na próxima rodada." : "Mensagem enviada");
+    toast(r.task.status === "pendente" ? "Enviado. A tarefa voltou para a fila e o NexCode Agente responde na próxima rodada." : "Mensagem enviada");
     load();
   } catch (err) { toast("Erro: " + err.message); }
 });
@@ -669,8 +669,8 @@ async function showPushDialog(){
     ? "No iPhone, os avisos só funcionam com o app instalado: no Safari, toque em Compartilhar → Adicionar à Tela de Início, abra pelo ícone e volte aqui."
     : "Este navegador não aceita avisos. No Android, use o Chrome.";
   else if (Notification.permission === "denied") msg = "Os avisos estão bloqueados para este app. Libere em Configurações do celular → Apps → Chrome (ou Tarefas) → Notificações.";
-  else if (sub) msg = "Ligados neste aparelho. Você recebe um aviso quando o agente concluir uma tarefa, precisar de você ou responder na conversa.";
-  else msg = "Receba um aviso no celular quando o agente concluir uma tarefa, precisar de você ou responder na conversa.";
+  else if (sub) msg = "Ligados neste aparelho. Você recebe um aviso quando o NexCode Agente concluir uma tarefa, precisar de você ou responder na conversa.";
+  else msg = "Receba um aviso no celular quando o NexCode Agente concluir uma tarefa, precisar de você ou responder na conversa.";
   $("#push-status").textContent = msg;
   $("#push-on").hidden = !pushSupported() || !!sub || Notification.permission === "denied";
   $("#push-test").hidden = !sub; $("#push-off").hidden = !sub;

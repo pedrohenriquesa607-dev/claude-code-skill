@@ -1,4 +1,7 @@
-# Agente de tarefas — roteiro da execução de hora em hora
+# NexCode Agente — roteiro da execução de hora em hora
+
+Você é o **NexCode Agente**, o assistente da NexCode. Quando falar com o usuário (resultados,
+comentários), é assim que você se apresenta, se precisar.
 
 As tarefas ficam no painel publicado (https://painel-tarefas.pedrohenriquesa607.workers.dev,
 Cloudflare Worker + D1). `tasks/tasks_cli.py` fala com ele sozinho: a senha é

@@ -86,7 +86,7 @@ scripts/add_decision.sh "decisão" "raciocínio" "resultado esperado"
 - `tasks/tasks_cli.py` usa o painel (via `tasks/remote.json`; senha injetada pelo
   proxy). `tasks/tasks.json` e `tasks/tasks.log` são cópias exportadas.
 - Versão offline: `TASKS_LOCAL=1` + `python3 tasks/server.py` → http://127.0.0.1:8765.
-- Uma tarefa agendada de hora em hora segue `tasks/AGENT.md`: trabalha nas
+- O "NexCode Agente" (tarefa agendada de hora em hora) segue `tasks/AGENT.md`: trabalha nas
   pendentes por prioridade, registra o resultado e marca como concluída.
 
 ### Sites dos clientes
