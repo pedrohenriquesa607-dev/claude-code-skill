@@ -47,7 +47,15 @@ cópia exportada do painel.
    duas frases: `python3 tasks/tasks_cli.py comment <id> "<o que mudou>"`.
    O usuário recebe um aviso no celular quando a tarefa é concluída, bloqueada
    ou quando você comenta.
-6. Para relatórios (ex.: "Resumo da semana"), use
+6. **Apresentações (slides):** gere com `python-pptx` (instale com `pip install python-pptx`
+   se faltar), formato 16:9, e converta para PDF com
+   `soffice --headless --convert-to pdf arquivo.pptx`. Anexe **os dois** (.pptx para
+   editar, .pdf para ver no celular). Design: um tema de cores consistente (fundo
+   claro, uma cor de destaque), título grande, no máximo 5 tópicos curtos por slide,
+   um slide de capa e um de fechamento com contato/próximo passo, números e
+   destaques em tamanho grande. Sem emojis. Antes de anexar, abra o PDF e confira
+   cada página (texto cortado, sobreposto ou vazio); corrija e gere de novo.
+7. Para relatórios (ex.: "Resumo da semana"), use
    `python3 tasks/tasks_cli.py history 7` para ver a atividade dos últimos dias.
 
 ## 4. Quando NÃO fazer — bloquear em vez disso
