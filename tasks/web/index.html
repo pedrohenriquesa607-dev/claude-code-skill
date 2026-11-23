@@ -87,6 +87,8 @@ li.task.flash{animation:flash 2s ease-out}
 .s-concluida{color:var(--ok)}.s-bloqueada{color:var(--warn)}.s-em_andamento{color:var(--accent)}.s-pendente{color:var(--muted)}
 .due-late{color:var(--danger);background:var(--danger-soft)}.due-soon{color:var(--warn);background:var(--warn-soft)}.due-ok{color:var(--muted)}
 .runnow{color:var(--accent);background:var(--accent-soft)}
+.info{color:var(--muted);background:var(--surface-2)}
+.ftype{font-size:10px;letter-spacing:.04em;padding:1px 5px;border-radius:4px;background:var(--accent-soft);color:var(--accent)}
 .tag{font-size:12px;color:var(--accent)}
 .result{margin-top:8px;padding:8px 12px;border-left:3px solid var(--ok);background:var(--surface-2);border-radius:0 6px 6px 0;font-size:14px;word-break:break-word;max-height:420px;overflow:auto}
 .result.blocked{border-left-color:var(--warn)}
@@ -157,7 +159,7 @@ dialog p{margin:0;color:var(--muted);font-size:14px}
     </div>
     <div class="head-actions">
       <button id="install" class="primary" hidden>Instalar app</button>
-      <button id="bell" hidden>🔔 Avisos</button>
+      <button id="bell" hidden>Avisos</button>
       <button id="sync" hidden title="Puxa o trabalho do agente e envia suas mudanças">⟳ Sincronizar com GitHub</button>
     </div>
   </header>
@@ -200,7 +202,7 @@ dialog p{margin:0;color:var(--muted);font-size:14px}
 
   <section class="card">
     <div class="toolbar">
-      <input type="search" class="search" id="search" placeholder="🔎 Buscar tarefas…" aria-label="Buscar">
+      <input type="search" class="search" id="search" placeholder="Buscar tarefas…" aria-label="Buscar">
     </div>
     <div class="toolbar" id="filters"></div>
     <div class="tagbar" id="tagbar"></div>
@@ -208,7 +210,7 @@ dialog p{margin:0;color:var(--muted);font-size:14px}
   </section>
 
   <section class="card cloud-only">
-    <details class="box" id="rulesbox"><summary>🔁 Tarefas que se repetem</summary>
+    <details class="box" id="rulesbox"><summary>Tarefas que se repetem</summary>
       <p class="sub" style="margin:6px 0 0">O painel cria essas tarefas sozinho no dia e hora marcados. Para criar uma nova, use "Repetir" ao adicionar uma tarefa.</p>
       <ul class="rules" id="rules"></ul>
     </details>
@@ -260,7 +262,7 @@ dialog p{margin:0;color:var(--muted);font-size:14px}
 
 <dialog id="pushdlg">
   <form method="dialog">
-    <strong>🔔 Avisos no celular</strong>
+    <strong>Avisos no celular</strong>
     <p id="push-status"></p>
     <div class="end">
       <button type="button" class="danger" id="push-off" hidden>Desligar</button>
@@ -317,7 +319,7 @@ const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt
 const fmt = iso => iso ? new Date(iso).toLocaleString("pt-BR", {dateStyle:"short", timeStyle:"short"}) : "";
 const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 const fmtSize = n => n < 1024 ? n + " B" : n < 1048576 ? Math.round(n / 1024) + " KB" : (n / 1048576).toFixed(1) + " MB";
-const fileIcon = m => m === "application/pdf" ? "📄" : m.startsWith("image/") ? "🖼️" : "📎";
+const fileIcon = m => `<b class="ftype">${m === "application/pdf" ? "PDF" : m.startsWith("image/") ? "IMG" : "ARQ"}</b>`;
 const tagsOf = t => (t.tags || "").split(",").filter(Boolean);
 const plainHtml = s => `<p>${esc(s).replace(/\n/g, "<br>")}</p>`;
 const renderMd = s => { try { return window.md ? window.md(s) : plainHtml(s); } catch (e) { return plainHtml(s); } };
@@ -413,10 +415,10 @@ function taskHtml(t){
         <div class="meta">
           <span class="badge p-${t.priority}">${P[t.priority]}</span>
           <span class="badge s-${t.status}">${S[t.status]}</span>
-          ${t.run_now ? `<span class="badge plain runnow">⚡ fazer agora</span>` : ""}
-          ${due ? `<span class="badge plain ${due.cls}">📅 ${due.txt}</span>` : ""}
-          ${t.recurring_id ? `<span title="Criada por uma repetição">🔁</span>` : ""}
-          ${t.share_url ? `<span title="Compartilhada com link">🔗</span>` : ""}
+          ${t.run_now ? `<span class="badge plain runnow">Fazer agora</span>` : ""}
+          ${due ? `<span class="badge plain ${due.cls}">${due.txt}</span>` : ""}
+          ${t.recurring_id ? `<span class="badge plain info" title="Criada por uma repetição">Repete</span>` : ""}
+          ${t.share_url ? `<span class="badge plain info" title="Compartilhada com link">Link ativo</span>` : ""}
           ${tagsOf(t).map(g => `<span class="tag">#${esc(g)}</span>`).join("")}
           <span>#${t.id} · criada ${fmt(t.created_at)}${t.completed_at ? " · concluída " + fmt(t.completed_at) : ""}</span>
         </div>
@@ -424,14 +426,14 @@ function taskHtml(t){
           ${long ? `<button class="morebtn" data-act="expand">${expanded.has(t.id) ? "Mostrar menos" : "Mostrar tudo"}</button>` : ""}` : ""}
         ${t.files && t.files.length ? `<div class="files">${t.files.map(f => `<span class="file"><button class="file-open" data-fid="${f.id}" title="Abrir ${esc(f.name)}">${fileIcon(f.mime)} <span>${esc(f.name)}</span> <small>${fmtSize(f.size)}</small></button><button class="ghost file-del" data-fid="${f.id}" data-name="${esc(f.name)}" aria-label="Remover ${esc(f.name)}">×</button></span>`).join("")}</div>` : ""}
         ${cloudMode ? `<details class="thread" data-tid="${t.id}" ${openThreads.has(t.id) ? "open" : ""}>
-          <summary>💬 ${cmts.length ? `Conversa (${cmts.length})` : "Falar com o agente"}</summary>
+          <summary>${cmts.length ? `Conversa (${cmts.length})` : "Falar com o agente"}</summary>
           ${cmts.length ? `<div class="cmts">${cmts.map(c => `<div class="cmt ${c.author}"><div class="cmt-text">${esc(c.text)}</div><small>${c.author === "agente" ? "Agente" : "Você"} · ${fmt(c.created_at)}</small></div>`).join("")}</div>` : ""}
           <form class="cmt-form" data-tid="${t.id}"><textarea name="text" placeholder="Ex.: ficou bom, mas faça mais curto" aria-label="Mensagem para o agente" required></textarea><button class="primary">Enviar</button></form>
         </details>` : ""}
       </div>
       <div class="actions">
         <button class="ghost" data-act="edit">Editar</button>
-        ${cloudMode ? `<button class="ghost now" data-act="now" title="Coloca no topo da fila para o agente fazer já">⚡ Fazer agora</button>
+        ${cloudMode ? `<button class="ghost now" data-act="now" title="Coloca no topo da fila para o agente fazer já">Fazer agora</button>
         <button class="ghost" data-act="attach">Anexar</button>
         <button class="ghost" data-act="share">Compartilhar</button>` : ""}
         <button class="ghost danger" data-act="del">Excluir</button>
@@ -581,7 +583,7 @@ $("#list").addEventListener("click", async e => {
   else if (act === "attach") { attachTo = t.id; $("#filepick").click(); }
   else if (act === "share") openShare(t);
   else if (act === "now") {
-    try { await api("POST", `/api/tasks/${t.id}/run-now`); toast("⚡ Na frente da fila. O agente começa em poucos minutos."); load(); }
+    try { await api("POST", `/api/tasks/${t.id}/run-now`); toast("Na frente da fila. O agente começa em poucos minutos."); load(); }
     catch (err) { toast("Erro: " + err.message); }
   } else if (act === "del") {
     if (!(await ask(`Excluir "${t.title}"? Os arquivos e a conversa dela também serão apagados.`, "Excluir"))) return;
@@ -625,7 +627,7 @@ $("#edit").addEventListener("close", async () => {
 async function loadRules(){
   rules = await api("GET", "/api/recurring");
   $("#rules").innerHTML = rules.length ? rules.map(r => `
-    <li data-rid="${r.id}"><div><b>🔁 ${esc(r.title)}</b><small>${esc(r.when)} · próxima: ${fmt(r.next_run)}</small></div>
+    <li data-rid="${r.id}"><div><b>${esc(r.title)}</b><small>${esc(r.when)} · próxima: ${fmt(r.next_run)}</small></div>
     <div><button class="ghost" data-ract="run">Criar agora</button><button class="ghost danger" data-ract="del">Remover</button></div></li>`).join("")
     : `<li><small>Nenhuma repetição ainda.</small></li>`;
 }
@@ -650,7 +652,7 @@ async function currentSub(){
 }
 async function updateBell(){
   const sub = await currentSub().catch(() => null);
-  $("#bell").textContent = sub ? "🔔 Avisos ligados" : "🔔 Ativar avisos";
+  $("#bell").textContent = sub ? "Avisos ligados" : "Ativar avisos";
 }
 const b64ToBytes = s => { const b = atob(s.replace(/-/g,"+").replace(/_/g,"/") + "===".slice((s.length+3)%4)); return Uint8Array.from(b, c => c.charCodeAt(0)); };
 async function showPushDialog(){
@@ -669,15 +671,33 @@ async function showPushDialog(){
   if (!$("#pushdlg").open) $("#pushdlg").showModal();
 }
 $("#bell").addEventListener("click", showPushDialog);
+async function subscribeOnce(reg, key){
+  const old = await reg.pushManager.getSubscription();
+  if (old) await old.unsubscribe().catch(() => {});
+  return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(key) });
+}
+const PUSH_HELP = "O Chrome não conseguiu falar com o serviço de avisos do Google. No celular, confira:\n" +
+  "1. Configurações → Apps → Chrome → Notificações: permitidas.\n" +
+  "2. Configurações → Apps → Chrome → Bateria: sem restrições (em Xiaomi/Redmi/POCO, ative também \"Início automático\").\n" +
+  "3. Play Store: atualize o Chrome e o \"Google Play Services\".\n" +
+  "4. Use o Chrome normal, não aba anônima, e com internet sem economia de dados.\n" +
+  "Depois feche o app por completo, abra de novo e toque em Ativar avisos.";
 $("#push-on").addEventListener("click", async () => {
+  const btn = $("#push-on"); btn.disabled = true; btn.textContent = "Ativando…";
   try {
     if (await Notification.requestPermission() !== "granted") { toast("Permissão negada"); return showPushDialog(); }
     const reg = await navigator.serviceWorker.register("/sw.js"); await navigator.serviceWorker.ready;
     const { key } = await api("GET", "/api/push/key");
-    const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(key) });
+    let sub;
+    try { sub = await subscribeOnce(reg, key); }
+    catch (first) { await new Promise(r => setTimeout(r, 1500)); sub = await subscribeOnce(reg, key); } // segunda tentativa do zero
     await api("POST", "/api/push/subscribe", sub.toJSON());
     toast("Avisos ativados"); updateBell(); showPushDialog();
-  } catch (err) { toast("Não foi possível ativar: " + err.message); }
+  } catch (err) {
+    const pushSvc = /push service|AbortError|registration failed/i.test(err.name + " " + err.message);
+    $("#push-status").textContent = pushSvc ? PUSH_HELP : "Não foi possível ativar: " + err.message;
+    $("#push-status").style.whiteSpace = "pre-line";
+  } finally { btn.disabled = false; btn.textContent = "Ativar avisos"; }
 });
 $("#push-test").addEventListener("click", async () => {
   try { const r = await api("POST", "/api/push/test"); toast(r.sent ? "Aviso enviado. Deve chegar em segundos." : "Não consegui enviar. Tente desligar e ativar de novo."); }

@@ -205,7 +205,7 @@ const SHARE_CSS = `:root{--bg:#f6f5f2;--surface:#fff;--fg:#1d1c1a;--muted:#6b676
 h1{font-size:26px;line-height:1.25;margin:0 0 6px}.meta{color:var(--muted);font-size:14px;margin-bottom:24px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
 .files{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 20px}.files a{display:inline-flex;gap:8px;align-items:center;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--fg);text-decoration:none;font-weight:600}
-.files a:hover{border-color:var(--accent);color:var(--accent)}.files small{color:var(--muted);font-weight:400}
+.files a:hover{border-color:var(--accent);color:var(--accent)}.files small{color:var(--muted);font-weight:400}.ft{font-size:11px;padding:1px 6px;border-radius:4px;background:var(--bg);color:var(--accent)}
 .md h2,.md h3,.md h4{line-height:1.3;margin:22px 0 8px}.md h2{font-size:21px}.md h3{font-size:18px}.md p{margin:0 0 12px}
 .md-table{overflow-x:auto;margin:0 0 14px}.md table{border-collapse:collapse;width:100%;font-size:14px}.md th,.md td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}.md th{background:var(--bg)}
 .md blockquote{margin:0 0 12px;padding:8px 14px;border-left:4px solid var(--accent);background:var(--bg)}.md a{color:var(--accent);word-break:break-all}
@@ -228,7 +228,7 @@ async function sharePage(env, token, fid) {
   const html = `<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex"><title>${esc(t.title)}</title><style>${SHARE_CSS}</style>
 <div class="wrap"><h1>${esc(t.title)}</h1><div class="meta">Atualizado em ${when}</div>
-${files.length ? `<div class="files">${files.map(f => `<a href="/s/${token}/f/${f.id}" target="_blank" rel="noopener">${f.mime === "application/pdf" ? "📄" : f.mime.startsWith("image/") ? "🖼️" : "📎"} ${esc(f.name)} <small>${size(f.size)}</small></a>`).join("")}</div>` : ""}
+${files.length ? `<div class="files">${files.map(f => `<a href="/s/${token}/f/${f.id}" target="_blank" rel="noopener"><b class="ft">${f.mime === "application/pdf" ? "PDF" : f.mime.startsWith("image/") ? "IMG" : "ARQ"}</b> ${esc(f.name)} <small>${size(f.size)}</small></a>`).join("")}</div>` : ""}
 ${t.result ? `<div class="card md">${md(t.result)}</div>` : ""}</div></html>`;
   return new Response(html, { headers: { "content-type": "text/html; charset=utf-8", "x-robots-tag": "noindex",
     "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'; img-src 'self'; frame-ancestors 'none'", "referrer-policy": "no-referrer" } });
@@ -345,8 +345,8 @@ async function api(req, env, url, ctx) {
     const extra = ["description", "result"].filter(k => k in ch && before[k] !== ch[k]);
     if (diff.length || extra.length) await log(env, actor, `editada #${tid}` + (diff.length ? ` (${diff.join(", ")})` : "") + (extra.length ? ` [${extra.join(", ")} alterado]` : ""));
     if (actor === "agente" && ch.status && ch.status !== before.status) {
-      if (ch.status === "concluida") pushTask(row, "✅ Tarefa concluída", row.title);
-      if (ch.status === "bloqueada") pushTask(row, "⚠️ O agente precisa de você", row.title);
+      if (ch.status === "concluida") pushTask(row, "Tarefa concluída", row.title);
+      if (ch.status === "bloqueada") pushTask(row, "O agente precisa de você", row.title);
     }
     return json(row);
   }
@@ -366,7 +366,7 @@ async function api(req, env, url, ctx) {
     const status = t.status === "em_andamento" ? t.status : "pendente";
     const row = await env.DB.prepare("UPDATE tasks SET run_now = 1, status = ?, completed_at = NULL, updated_at = ? WHERE id = ? RETURNING *")
       .bind(status, now(), tid).first();
-    await log(env, actor, `⚡ fazer agora #${tid} ${t.title}`);
+    await log(env, actor, `fazer agora #${tid} ${t.title}`);
     return json(row);
   }
 
@@ -386,7 +386,7 @@ async function api(req, env, url, ctx) {
       task = await env.DB.prepare("UPDATE tasks SET status = 'pendente', completed_at = NULL, updated_at = ? WHERE id = ? RETURNING *").bind(now(), tid).first();
       await log(env, actor, `reaberta #${tid} pelo comentário`);
     }
-    if (author === "agente") pushTask(t, "💬 O agente respondeu", `${t.title}: ${text.slice(0, 100)}`);
+    if (author === "agente") pushTask(t, "O agente respondeu", `${t.title}: ${text.slice(0, 100)}`);
     return json({ comment: c, task }, 201);
   }
 
@@ -476,7 +476,7 @@ async function api(req, env, url, ctx) {
     return json({ ok: true });
   }
   if (path === "/api/push/test" && m === "POST") {
-    return json(await notify(env, url.origin, { title: "🔔 Avisos funcionando", body: "Você vai ser avisado quando o agente terminar ou precisar de você.", url: "/" }));
+    return json(await notify(env, url.origin, { title: "Avisos funcionando", body: "Você vai ser avisado quando o agente terminar ou precisar de você.", url: "/" }));
   }
 
   // --- Histórico ---

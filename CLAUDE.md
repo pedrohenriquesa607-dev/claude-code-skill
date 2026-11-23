@@ -70,12 +70,13 @@ scripts/add_decision.sh "decisão" "raciocínio" "resultado esperado"
   (Cloudflare Worker `painel-tarefas` + banco D1 `painel-tarefas`, login pelo
   secret `ACCESS_TOKEN`). Código em `cloudflare/`; a Cloudflare publica sozinha a
   cada push na branch padrão `claude/charming-turing-pdpjug` (Workers Builds).
-- Funções do painel: modelos de tarefa, prazos (ordem: ⚡fazer agora > vence até
+- Funções do painel: modelos de tarefa, prazos (ordem: fazer agora > vence até
   amanhã > prioridade), avisos no celular (Web Push, chaves VAPID na tabela
-  `settings`), conversa por tarefa (`comments`), ⚡ fazer agora (plantão do agente,
+  `settings`), conversa por tarefa (`comments`), fazer agora (plantão do agente,
   `tasks_cli.py wait-now`), etiquetas, repetições (tabela `recurring` + cron da
   Cloudflare a cada 10 min; o "Resumo da semana" de sexta 20h é criado sozinho),
   busca, compartilhar com cliente (`/s/<token>`, tabela `shares`).
+- Sem emojis no app, nos avisos e nos resultados do agente (preferência do usuário).
 - Mudanças no banco: escrever em `cloudflare/migrations/` e aplicar no D1 real
   (ferramenta d1_database_query) ANTES de publicar o código.
 - Arquivos entregues ficam anexados às tarefas (tabela `files` no D1, máx. 1,9 MB;

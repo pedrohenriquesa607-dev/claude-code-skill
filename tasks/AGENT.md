@@ -14,7 +14,7 @@ cópia exportada do painel.
 
 ## 2. Escolher
 - `python3 tasks/tasks_cli.py next` já devolve a próxima na ordem certa:
-  1. tarefas marcadas **⚡ fazer agora** (o usuário tocou no botão);
+  1. tarefas marcadas **fazer agora** (o usuário tocou no botão);
   2. as que estão `em_andamento` (uma rodada anterior caiu no meio);
   3. pendentes com **prazo até amanhã** (ou atrasadas);
   4. o resto por prioridade (urgente > alta > média > baixa) e prazo.
@@ -22,7 +22,7 @@ cópia exportada do painel.
   a próxima hora.
 
 ## 3. Trabalhar em cada tarefa
-1. `python3 tasks/tasks_cli.py start <id>` (isso também tira o ⚡ "fazer agora").
+1. `python3 tasks/tasks_cli.py start <id>` (isso também tira a marca "fazer agora").
 2. **Leia a conversa da tarefa** (`comments` no JSON do `next`). As mensagens do
    usuário (`author: "voce"`) mais recentes que a sua última resposta são
    instruções: se ele pediu ajuste numa tarefa já feita, refaça só o ajuste.
@@ -38,6 +38,8 @@ cópia exportada do painel.
      No resultado, diga "Arquivo anexado abaixo" em vez de caminhos do GitHub.
    - O resultado aparece formatado no app (Markdown: títulos, negrito, listas,
      tabelas). Escreva para o usuário ler no celular: curto no topo, detalhes abaixo.
+   - **Não use emojis** em resultados, comentários, PDFs nem arquivos entregues:
+     o usuário não gosta.
    - Registre passos relevantes com `python3 tasks/tasks_cli.py log "#<id> ..."`.
 4. Ao terminar: `python3 tasks/tasks_cli.py complete <id> "<o que foi feito,
    onde está o resultado, o que o usuário precisa saber>"`.
@@ -83,7 +85,7 @@ diga no motivo o que falta.
   que ficou para a próxima hora.
 
 ## 8. Plantão do "Fazer agora" (depois de finalizar)
-O botão ⚡ "Fazer agora" do app marca a tarefa e espera um agente acordado.
+O botão "Fazer agora" do app marca a tarefa e espera um agente acordado.
 - Só entre **07:00 e 23:00 de Brasília** (UTC-3). Fora disso, termine a sessão.
 - Rode o plantão **em segundo plano** (Bash com `run_in_background: true` e
   `timeout` de 3300000 ms), para não gastar nada enquanto espera:
@@ -93,4 +95,4 @@ O botão ⚡ "Fazer agora" do app marca a tarefa e espera um agente acordado.
     a esperar com o tempo que falta até completar ~48 minutos desde o início do
     plantão;
   - saída **3** ("plantão encerrado"): termine a sessão; a próxima rodada já vem.
-- No plantão não pegue tarefas comuns: só as marcadas ⚡.
+- No plantão não pegue tarefas comuns: só as marcadas "fazer agora".

@@ -86,8 +86,8 @@ def main(a):
     b, c = backend(), a[0]
     if c == "list":
         for t in b.list_tasks():
-            extra = "".join([" ⚡agora" if t.get("run_now") else "", f" prazo:{t['due_date']}" if t.get("due_date") else "",
-                             f" #{t['tags'].replace(',', ' #')}" if t.get("tags") else "", f" 💬{len(t['comments'])}" if t.get("comments") else ""])
+            extra = "".join([" [fazer agora]" if t.get("run_now") else "", f" prazo:{t['due_date']}" if t.get("due_date") else "",
+                             f" #{t['tags'].replace(',', ' #')}" if t.get("tags") else "", f" conversa:{len(t['comments'])}" if t.get("comments") else ""])
             print(f"#{t['id']:<3} {t['priority']:<8} {t['status']:<13} {t['title']}{extra}")
     elif c == "next":
         ts = b.list_tasks()  # já vem na ordem de trabalho do painel
