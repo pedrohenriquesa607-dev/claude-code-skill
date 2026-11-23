@@ -13,6 +13,8 @@ os arquivos locais). Senão, usa tasks/tasks.json e tasks/tasks.log.
   tasks_cli.py block <id> "<motivo>"    status -> bloqueada
   tasks_cli.py log "<mensagem>"
   tasks_cli.py attach <id> <arquivo>    anexa um arquivo (PDF, imagem…) à tarefa no painel (máx. 1,9 MB)
+  tasks_cli.py site-publish <nome> <pasta>   publica um site em https://nexcode.pedrohenriquesa607.workers.dev/<nome>/
+  tasks_cli.py site-list                      lista os sites publicados
   tasks_cli.py download <file_id> <caminho>   baixa um anexo da tarefa (ex.: foto enviada pelo usuário)
   tasks_cli.py comment <id> "<texto>"   responde ao usuário na conversa da tarefa
   tasks_cli.py history [dias]           atividade dos últimos N dias (padrão 7)
@@ -102,6 +104,29 @@ def main(a):
         print(f"#{t['id']} criada")
     elif c == "start":
         b.update(int(a[1]), {"status": "em_andamento", "run_now": 0} if isinstance(b, Remote) else {"status": "em_andamento"})
+    elif c == "site-publish":
+        if not isinstance(b, Remote):
+            sys.exit("site-publish só funciona com o painel publicado")
+        slug, folder = a[1].lower(), pathlib.Path(a[2])
+        files = [f for f in sorted(folder.rglob("*")) if f.is_file() and not f.name.startswith(".")]
+        if not any(f.relative_to(folder).as_posix() == "index.html" for f in files):
+            sys.exit("a pasta precisa ter um index.html")
+        for f in files:
+            rel = f.relative_to(folder).as_posix()
+            req = urllib.request.Request(
+                f"{b.url}/api/sites/{slug}/files?path={urllib.parse.quote(rel)}", method="PUT", data=f.read_bytes(),
+                headers={"Content-Type": "application/octet-stream", "X-Actor": A, "User-Agent": "painel-tarefas-agente/1.0",
+                         "Authorization": "Bearer " + os.environ.get("TASKS_TOKEN", "proxy-injected")})
+            try:
+                urllib.request.urlopen(req, timeout=60).read()
+            except urllib.error.HTTPError as e:
+                sys.exit(f"erro {e.code} ao enviar {rel}: {e.read().decode(errors='replace')[:200]}")
+            print(f"enviado {rel}")
+        b.call("POST", f"/api/sites/{slug}")
+        print(f"publicado: https://nexcode.pedrohenriquesa607.workers.dev/{slug}/")
+    elif c == "site-list":
+        for x in b.call("GET", "/api/sites"):
+            print(f"{x['slug']:<30} {x['files']} arquivos  {x['updated_at']}  https://nexcode.pedrohenriquesa607.workers.dev/{x['slug']}/")
     elif c == "download":
         if not isinstance(b, Remote):
             sys.exit("download só funciona com o painel publicado")

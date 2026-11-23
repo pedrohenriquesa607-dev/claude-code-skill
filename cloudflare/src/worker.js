@@ -435,6 +435,38 @@ async function api(req, env, url, ctx) {
     return json({ ok: true });
   }
 
+  // --- Sites dos clientes (servidos pelo Worker nexcode a partir do D1) ---
+  const siteFile = path.match(/^\/api\/sites\/([a-z0-9][a-z0-9-]{0,60})\/files$/);
+  if (siteFile && m === "PUT") {
+    const slug = siteFile[1];
+    const fp = String(url.searchParams.get("path") || "").replace(/^\/+/, "");
+    if (!fp || fp.includes("..") || !/^[A-Za-z0-9._\/-]{1,200}$/.test(fp)) throw new BadRequest("caminho inválido");
+    const buf = await req.arrayBuffer();
+    if (!buf.byteLength) throw new BadRequest("arquivo vazio");
+    if (buf.byteLength > MAX_FILE) return json({ error: "arquivo grande demais (máximo 1,9 MB)" }, 413);
+    const ext = fp.toLowerCase().split(".").pop();
+    const mime = { html: "text/html; charset=utf-8", css: "text/css; charset=utf-8", js: "text/javascript; charset=utf-8", svg: "image/svg+xml",
+      ico: "image/x-icon", woff2: "font/woff2", mp4: "video/mp4" }[ext] || mimeFor(fp);
+    await env.DB.prepare(`INSERT INTO site_files (slug, path, mime, size, data, updated_at) VALUES (?, ?, ?, ?, ?, ?)
+      ON CONFLICT(slug, path) DO UPDATE SET mime = excluded.mime, size = excluded.size, data = excluded.data, updated_at = excluded.updated_at`)
+      .bind(slug, fp, mime, buf.byteLength, buf, now()).run();
+    return json({ ok: true, slug, path: fp, size: buf.byteLength }, 201);
+  }
+  const siteOne = path.match(/^\/api\/sites\/([a-z0-9][a-z0-9-]{0,60})$/);
+  if (siteOne && m === "DELETE") {
+    await env.DB.prepare("DELETE FROM site_files WHERE slug = ?").bind(siteOne[1]).run();
+    await log(env, actor, `site removido: ${siteOne[1]}`);
+    return json({ ok: true });
+  }
+  if (path === "/api/sites" && m === "GET") {
+    const { results } = await env.DB.prepare("SELECT slug, COUNT(*) AS files, SUM(size) AS bytes, MAX(updated_at) AS updated_at FROM site_files GROUP BY slug ORDER BY updated_at DESC").all();
+    return json(results);
+  }
+  if (siteOne && m === "POST") { // registra a publicação no histórico
+    await log(env, actor, `site publicado: ${siteOne[1]}`);
+    return json({ ok: true });
+  }
+
   // --- Repetições ---
   if (path === "/api/recurring" && m === "GET") {
     await runRecurring(env); // garante o resumo semanal e cria o que já venceu

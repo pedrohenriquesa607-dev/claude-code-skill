@@ -91,9 +91,13 @@ scripts/add_decision.sh "decisão" "raciocínio" "resultado esperado"
 
 ### Sites dos clientes
 
-- Pasta `sites/` = Worker `nexcode` (Workers Builds, deploy `cd sites && npx wrangler deploy`,
-  publica a cada push na branch padrão). Cada site em `sites/public/<nome>/`, endereço
-  https://nexcode.pedrohenriquesa607.workers.dev/<nome>/. Roteiro do agente: `sites/SITES.md`.
+- Worker `nexcode` (pasta `sites/`, Workers Builds com `cd sites && npx wrangler deploy`):
+  página inicial/404 em `sites/public/`; cada site de cliente fica no D1 (tabela
+  `site_files`) e abre em https://nexcode.pedrohenriquesa607.workers.dev/<nome>/.
+- Publicar sem GitHub: `tasks_cli.py site-publish <nome> <pasta>` (API do painel
+  `/api/sites/...`). Roteiro do agente: `sites/SITES.md`.
+- As rodadas agendadas NÃO conseguem dar push no GitHub (403); por isso tudo que o
+  agente entrega vai pelo painel (anexos) ou pelo D1 (sites).
 - O usuário não quer trocar o subdomínio workers.dev nem comprar domínio (2026-11-23).
 
 ### Ao final de cada sessão (ou ao concluir uma tarefa relevante)

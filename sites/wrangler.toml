@@ -1,10 +1,17 @@
-# Sites e demonstrações da NexCode. Cada site fica em public/<nome>/ e abre em
-# https://nexcode.pedrohenriquesa607.workers.dev/<nome>/  (a Cloudflare publica sozinha a cada push).
+# Sites e demonstrações da NexCode: https://nexcode.pedrohenriquesa607.workers.dev/<nome>/
+# A página inicial e a 404 vêm de public/; cada site de cliente vem do banco D1
+# (tabela site_files), enviado pelo agente com `tasks_cli.py site-publish`.
 name = "nexcode"
+main = "worker.js"
 compatibility_date = "2025-06-01"
 workers_dev = true
 
 [assets]
 directory = "./public"
-not_found_handling = "404-page"
-html_handling = "auto-trailing-slash"
+binding = "ASSETS"
+not_found_handling = "none"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "painel-tarefas"
+database_id = "3a6194d6-9ec6-4fb2-bc61-b793f55edd14"
