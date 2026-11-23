@@ -12,6 +12,7 @@ import { newVapidKeys, sendPush } from "./push.js";
 import { nextRun, describe } from "./recur.js";
 
 const MANIFEST = JSON.stringify({
+  id: "/?app=nexcode",
   name: "NexCode",
   short_name: "NexCode",
   description: "Suas tarefas, feitas pelo NexCode Agente de hora em hora.",
@@ -23,16 +24,16 @@ const MANIFEST = JSON.stringify({
   background_color: "#03060c",
   theme_color: "#03060c",
   icons: [
-    { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
-    { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
-    { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+    { src: "/nexcode-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+    { src: "/nexcode-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+    { src: "/nexcode-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
   ],
 });
 
 // Service worker: guarda só a página e os ícones para abrir rápido (as tarefas, em
 // /api, sempre vêm da internet) e mostra os avisos (push) no celular.
-const SW = `const C = "painel-v5";
-self.addEventListener("install", e => { e.waitUntil(caches.open(C).then(c => c.addAll(["/", "/md.js", "/moon.jpg", "/earth.jpg", "/icon-192.png", "/icon-512.png"]))); self.skipWaiting(); });
+const SW = `const C = "nexcode-v6";
+self.addEventListener("install", e => { e.waitUntil(caches.open(C).then(c => c.addAll(["/", "/md.js", "/moon.jpg", "/earth.jpg", "/nexcode-192.png", "/nexcode-512.png"]))); self.skipWaiting(); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== C).map(k => caches.delete(k))))); self.clients.claim(); });
 self.addEventListener("fetch", e => {
   const u = new URL(e.request.url);
@@ -43,7 +44,7 @@ self.addEventListener("fetch", e => {
 self.addEventListener("push", e => {
   let d = {}; try { d = e.data.json(); } catch (_) { d = { title: "Painel de Tarefas", body: e.data ? e.data.text() : "" }; }
   e.waitUntil(self.registration.showNotification(d.title || "Painel de Tarefas", {
-    body: d.body || "", icon: "/icon-192.png", badge: "/icon-192.png", tag: d.tag || undefined, data: { url: d.url || "/" } }));
+    body: d.body || "", icon: "/nexcode-192.png", badge: "/nexcode-192.png", tag: d.tag || undefined, data: { url: d.url || "/" } }));
 });
 self.addEventListener("notificationclick", e => {
   e.notification.close();
@@ -59,6 +60,10 @@ const MD_JS = `var __name = __name || function (f) { return f; };\nwindow.md = $
 
 const STATIC = {
   "/manifest.webmanifest": [MANIFEST, "application/manifest+json"],
+  "/nexcode.webmanifest": [MANIFEST, "application/manifest+json"],
+  "/nexcode-192.png": [ICON_192, "image/png"],
+  "/nexcode-512.png": [ICON_512, "image/png"],
+  "/nexcode-180.png": [APPLE_ICON, "image/png"],
   "/sw.js": [SW, "text/javascript"],
   "/md.js": [MD_JS, "text/javascript"],
   "/icon-192.png": [ICON_192, "image/png"],
@@ -548,7 +553,7 @@ export default {
     }
     if (url.pathname in STATIC) {
       const [body, type] = STATIC[url.pathname];
-      const fresh = url.pathname === "/sw.js" || url.pathname === "/md.js";
+      const fresh = url.pathname === "/sw.js" || url.pathname === "/md.js" || url.pathname.endsWith(".webmanifest");
       return new Response(body, { headers: { "content-type": type, "cache-control": fresh ? "no-cache" : "public, max-age=86400" } });
     }
     const share = url.pathname.match(/^\/s\/([A-Za-z0-9_-]{10,40})(?:\/f\/(\d+))?\/?$/);
