@@ -10,9 +10,11 @@
    - Coloque `<meta name="robots" content="noindex">` em sites de demonstração.
    - Nada de dados pessoais do usuário (e-mail, endereço) que a tarefa não pediu.
 3. Commit e push para `claude/magical-brown-x5trn6` **e** `claude/charming-turing-pdpjug`
-   (a Cloudflare publica a partir da segunda em 1 a 2 minutos).
-4. Confirme que está no ar: `curl -s -o /dev/null -w "%{http_code}" -A agente https://sites.pedrohenriquesa607.workers.dev/<nome>/`
+   (o Cloudflare Pages publica a partir da segunda em 1 a 2 minutos).
+4. Confirme que está no ar: `curl -s -o /dev/null -w "%{http_code}" -A agente https://nexcode.pages.dev/<nome>/`
    até dar 200 (tente por até 5 minutos).
 5. No resultado da tarefa: o link do site, o que tem na página e o que o usuário precisa mandar
    (fotos reais, número de WhatsApp, horário). Anexe também um print (PNG) da página no celular,
-   tirado com o Playwright.
+   tirado com o Playwright abrindo o arquivo local (`file://.../sites/public/<nome>/index.html`).
+6. Se o `curl` do passo 4 for bloqueado pela rede, não é erro do site: confira só pelo print local
+   e diga no resultado que o link fica no ar em até 2 minutos.

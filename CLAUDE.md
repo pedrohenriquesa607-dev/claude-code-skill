@@ -91,11 +91,12 @@ scripts/add_decision.sh "decisão" "raciocínio" "resultado esperado"
 
 ### Sites dos clientes
 
-- Pasta `sites/` (Worker `sites`, publicado pela Cloudflare a cada push na branch
-  padrão): cada site em `sites/public/<nome>/`, endereço
-  https://sites.pedrohenriquesa607.workers.dev/<nome>/. Roteiro do agente: `sites/SITES.md`.
-- Subdomínio da Cloudflare continua `pedrohenriquesa607` (trocar quebraria links de clientes).
-  Para esconder esse nome nos sites, o caminho é um domínio próprio (ideia: nexcode).
+- Pasta `sites/public/` publicada pelo **Cloudflare Pages** (projeto `nexcode`, saída
+  `sites/public`, sem build) a cada push na branch padrão: cada site em
+  `sites/public/<nome>/`, endereço https://nexcode.pages.dev/<nome>/.
+  Roteiro do agente: `sites/SITES.md`.
+- O usuário NÃO quer trocar o subdomínio workers.dev (pedrohenriquesa607) nem comprar
+  domínio; o Pages evita mostrar esse nome nos sites novos.
 
 ### Ao final de cada sessão (ou ao concluir uma tarefa relevante)
 
