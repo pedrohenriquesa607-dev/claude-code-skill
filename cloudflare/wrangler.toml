@@ -3,7 +3,10 @@ main = "src/worker.js"
 compatibility_date = "2025-06-01"
 workers_dev = true
 
-rules = [{ type = "Text", globs = ["**/*.html"], fallthrough = true }]
+rules = [
+  { type = "Text", globs = ["**/*.html"], fallthrough = true },
+  { type = "Data", globs = ["**/*.png"], fallthrough = true },
+]
 
 [[d1_databases]]
 binding = "DB"

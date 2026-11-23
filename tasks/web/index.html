@@ -2,8 +2,16 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Painel de Tarefas</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#2f5bd3">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Tarefas">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>
 :root{
   --bg:#f6f5f2;--surface:#fff;--surface-2:#f0eee9;--text:#1d1c1a;--muted:#6b6760;--border:#e2dfd8;
@@ -19,7 +27,9 @@
 }}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-.wrap{max-width:960px;margin:0 auto;padding:28px 16px 64px}
+.wrap{max-width:960px;margin:0 auto;padding:calc(28px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(64px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.head-actions{display:flex;gap:8px;flex-wrap:wrap}
+@media (display-mode:standalone){body{-webkit-user-select:none;user-select:none}input,textarea,.desc,.result,.title{-webkit-user-select:text;user-select:text}}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
 h1{font-size:22px;margin:0;letter-spacing:-.01em}
 .sub{color:var(--muted);font-size:13px}
@@ -69,7 +79,10 @@ dialog label{font-size:13px;color:var(--muted);display:grid;gap:4px}
 .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:9px 16px;border-radius:8px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100vw - 32px)}
 .toast.show{opacity:1}
 @media (max-width:640px){
-  .stats{grid-template-columns:repeat(2,1fr)}
+  .stats{grid-template-columns:repeat(4,1fr);gap:6px}
+  .stat{padding:8px 6px;text-align:center}
+  .stat b{font-size:18px}
+  .stat span{font-size:11px;line-height:1.2;display:block}
   form.add{grid-template-columns:1fr}
   .row{grid-template-columns:1fr}
   li.task{grid-template-columns:auto 1fr}
@@ -84,7 +97,10 @@ dialog label{font-size:13px;color:var(--muted);display:grid;gap:4px}
       <h1>Painel de Tarefas</h1>
       <div class="sub">O agente trabalha nas pendentes de hora em hora, pela ordem de prioridade.</div>
     </div>
-    <button id="sync" hidden title="Puxa o trabalho do agente e envia suas mudanças">⟳ Sincronizar com GitHub</button>
+    <div class="head-actions">
+      <button id="install" class="primary" hidden>Instalar app</button>
+      <button id="sync" hidden title="Puxa o trabalho do agente e envia suas mudanças">⟳ Sincronizar com GitHub</button>
+    </div>
   </header>
 
   <div class="stats" id="stats"></div>
@@ -280,6 +296,22 @@ $("#sync").addEventListener("click", async e => {
 });
 
 $("#logbox").addEventListener("toggle", () => { if ($("#logbox").open) loadLog(); });
+
+// App instalável (PWA)
+let installEvt = null;
+window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; $("#install").hidden = false; });
+$("#install").addEventListener("click", async () => {
+  if (!installEvt) return;
+  installEvt.prompt();
+  const { outcome } = await installEvt.userChoice;
+  if (outcome === "accepted") toast("App instalado");
+  installEvt = null; $("#install").hidden = true;
+});
+window.addEventListener("appinstalled", () => { $("#install").hidden = true; });
+if ("serviceWorker" in navigator && location.protocol === "https:") {
+  navigator.serviceWorker.register("/sw.js").catch(() => {});
+}
+document.addEventListener("visibilitychange", () => { if (!document.hidden && !$("#login").open) load().catch(() => {}); });
 
 init();
 setInterval(() => { if (!$("#login").open) load().catch(() => {}); }, 30000);

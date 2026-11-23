@@ -2,6 +2,48 @@
 // A página é pública, mas toda a API exige "Authorization: Bearer <ACCESS_TOKEN>"
 // (secret do Worker). O agente de hora em hora usa a API do D1 diretamente.
 import HTML from "../../tasks/web/index.html";
+import ICON_192 from "../static/icon-192.png";
+import ICON_512 from "../static/icon-512.png";
+import APPLE_ICON from "../static/apple-touch-icon.png";
+
+const MANIFEST = JSON.stringify({
+  name: "Painel de Tarefas",
+  short_name: "Tarefas",
+  description: "Suas tarefas, feitas pelo agente de hora em hora.",
+  lang: "pt-BR",
+  start_url: "/",
+  scope: "/",
+  display: "standalone",
+  orientation: "portrait",
+  background_color: "#f6f5f2",
+  theme_color: "#2f5bd3",
+  icons: [
+    { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+    { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+    { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+  ],
+});
+
+// Service worker: guarda só a página e os ícones para abrir rápido; as tarefas
+// (/api) sempre vêm da internet, nunca do cache.
+const SW = `const C = "painel-v1";
+self.addEventListener("install", e => { e.waitUntil(caches.open(C).then(c => c.addAll(["/", "/icon-192.png", "/icon-512.png"]))); self.skipWaiting(); });
+self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== C).map(k => caches.delete(k))))); self.clients.claim(); });
+self.addEventListener("fetch", e => {
+  const u = new URL(e.request.url);
+  if (e.request.method !== "GET" || u.origin !== location.origin || u.pathname.startsWith("/api/")) return;
+  e.respondWith(fetch(e.request).then(r => { const copy = r.clone(); caches.open(C).then(c => c.put(e.request, copy)); return r; })
+    .catch(() => caches.match(e.request).then(r => r || caches.match("/"))));
+});`;
+
+const STATIC = {
+  "/manifest.webmanifest": [MANIFEST, "application/manifest+json"],
+  "/sw.js": [SW, "text/javascript"],
+  "/icon-192.png": [ICON_192, "image/png"],
+  "/icon-512.png": [ICON_512, "image/png"],
+  "/apple-touch-icon.png": [APPLE_ICON, "image/png"],
+  "/favicon.ico": [ICON_192, "image/png"],
+};
 
 const PRIORITIES = { urgente: 4, alta: 3, media: 2, baixa: 1 };
 const STATUSES = ["pendente", "em_andamento", "concluida", "bloqueada"];
@@ -111,11 +153,15 @@ export default {
       return new Response(HTML, {
         headers: {
           "content-type": "text/html; charset=utf-8",
-          "content-security-policy": "default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; frame-ancestors 'none'",
+          "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; worker-src 'self'; manifest-src 'self'; style-src 'unsafe-inline'; frame-ancestors 'none'",
           "x-content-type-options": "nosniff",
           "referrer-policy": "no-referrer",
         },
       });
+    }
+    if (url.pathname in STATIC) {
+      const [body, type] = STATIC[url.pathname];
+      return new Response(body, { headers: { "content-type": type, "cache-control": url.pathname === "/sw.js" ? "no-cache" : "public, max-age=86400" } });
     }
     if (url.pathname.startsWith("/api/")) {
       try {
