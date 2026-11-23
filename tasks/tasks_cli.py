@@ -12,9 +12,10 @@ os arquivos locais). Senão, usa tasks/tasks.json e tasks/tasks.log.
   tasks_cli.py complete <id> "<o que foi feito>"
   tasks_cli.py block <id> "<motivo>"    status -> bloqueada
   tasks_cli.py log "<mensagem>"
+  tasks_cli.py attach <id> <arquivo>    anexa um arquivo (PDF, imagem…) à tarefa no painel (máx. 1,9 MB)
   tasks_cli.py export                   copia tarefas e log do painel para tasks.json / tasks.log
 """
-import json, os, sys, pathlib, urllib.request, urllib.error
+import json, os, sys, pathlib, urllib.request, urllib.error, urllib.parse
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import store
@@ -46,6 +47,19 @@ class Remote:
     def update(self, i, f): return self.call("PUT", f"/api/tasks/{i}", f)
     def log(self, msg): self.call("POST", "/api/log", {"msg": msg})
     def log_lines(self): return self.call("GET", "/api/log")
+
+    def attach(self, i, path):
+        p = pathlib.Path(path)
+        data = p.read_bytes()
+        req = urllib.request.Request(
+            f"{self.url}/api/tasks/{i}/files?name={urllib.parse.quote(p.name)}", method="POST", data=data,
+            headers={"Content-Type": "application/octet-stream", "X-Actor": A, "User-Agent": "painel-tarefas-agente/1.0",
+                     "Authorization": "Bearer " + os.environ.get("TASKS_TOKEN", "proxy-injected")})
+        try:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                return json.loads(r.read())
+        except urllib.error.HTTPError as e:
+            sys.exit(f"erro {e.code} ao anexar {p.name}: {e.read().decode(errors='replace')[:300]}")
 
 
 class Local:
@@ -87,6 +101,11 @@ def main(a):
         b.log(f"bloqueada #{a[1]}: {a[2][:300]}")
     elif c == "log":
         b.log(" ".join(a[1:]))
+    elif c == "attach":
+        if not isinstance(b, Remote):
+            sys.exit("attach só funciona com o painel publicado")
+        f = b.attach(int(a[1]), a[2])
+        print(f"anexado: {f['name']} ({f['size']} bytes) na tarefa #{a[1]}")
     elif c == "export":
         if not isinstance(b, Remote):
             sys.exit("export só faz sentido com o painel remoto")

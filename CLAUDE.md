@@ -70,6 +70,8 @@ scripts/add_decision.sh "decisão" "raciocínio" "resultado esperado"
   (Cloudflare Worker `painel-tarefas` + banco D1 `painel-tarefas`, login pelo
   secret `ACCESS_TOKEN`). Código em `cloudflare/`; a Cloudflare publica sozinha a
   cada push na branch padrão `claude/charming-turing-pdpjug` (Workers Builds).
+- Arquivos entregues ficam anexados às tarefas (tabela `files` no D1, máx. 1,9 MB;
+  `tasks_cli.py attach <id> <arquivo>`) e abrem direto no app.
 - `tasks/tasks_cli.py` usa o painel (via `tasks/remote.json`; senha injetada pelo
   proxy). `tasks/tasks.json` e `tasks/tasks.log` são cópias exportadas.
 - Versão offline: `TASKS_LOCAL=1` + `python3 tasks/server.py` → http://127.0.0.1:8765.

@@ -26,7 +26,11 @@ cópia exportada do painel.
    pública e os conectores disponíveis.
    - Código: altere o repositório nesta branch.
    - Pesquisa, texto, análise, planos: salve em
-     `tasks/output/<id>-<titulo-curto>.md`.
+     `tasks/output/<id>-<titulo-curto>.md` (e em PDF, se a tarefa pedir).
+   - **Anexe todo arquivo entregue à tarefa no painel**, para o usuário abrir
+     direto no app: `python3 tasks/tasks_cli.py attach <id> tasks/output/<arquivo>`
+     (máximo 1,9 MB por arquivo). Isso é a entrega principal; o GitHub é cópia.
+     No resultado, diga "Arquivo anexado abaixo" em vez de caminhos do GitHub.
    - Registre passos relevantes com `python3 tasks/tasks_cli.py log "#<id> ..."`.
 3. Ao terminar: `python3 tasks/tasks_cli.py complete <id> "<o que foi feito,
    onde está o resultado, o que o usuário precisa saber>"`.
@@ -44,8 +48,8 @@ Nesses casos, faça a parte preparatória segura (rascunho, pesquisa, plano) e
 diga no motivo o que falta.
 
 ## 5. Se o push para o GitHub falhar
-- Isso não bloqueia a tarefa. O trabalho em si está pronto: coloque o texto
-  completo no resultado (`complete`) e marque como **concluída**.
+- Isso não bloqueia a tarefa: os arquivos já estão anexados no painel. Marque
+  como **concluída** normalmente.
 - No resultado, escreva só uma linha no início: "O arquivo não pôde ser salvo no
   GitHub nesta rodada; o conteúdo completo está abaixo." Sem jargão técnico.
 - Registre o erro com `tasks_cli.py log` para o Claude corrigir depois.

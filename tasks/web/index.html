@@ -66,7 +66,14 @@ li.task:first-child{border-top:0}
 .s-concluida{color:var(--ok)}.s-bloqueada{color:var(--warn)}.s-em_andamento{color:var(--accent)}.s-pendente{color:var(--muted)}
 .result{margin-top:8px;padding:8px 10px;border-left:3px solid var(--ok);background:var(--surface-2);border-radius:0 6px 6px 0;font-size:13px;white-space:pre-wrap;word-break:break-word}
 .result.blocked{border-left-color:var(--warn)}
-.actions{display:flex;gap:2px}
+.actions{display:flex;gap:2px;flex-wrap:wrap}
+.files{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.file{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);max-width:100%}
+.file-open{border:0;background:transparent;padding:7px 10px;display:inline-flex;gap:6px;align-items:center;font-weight:600;min-width:0;text-align:left}
+.file-open span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px}
+.file-open small{color:var(--muted);font-weight:400}
+.file-del{padding:4px 9px;border-left:1px solid var(--border);border-radius:0 8px 8px 0;color:var(--muted)}
+.file-open:hover{color:var(--accent)}
 .empty{color:var(--muted);text-align:center;padding:28px 0}
 details summary{cursor:pointer;font-weight:600}
 .log{font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);max-height:260px;overflow:auto;margin-top:10px;white-space:pre-wrap;word-break:break-word}
@@ -156,6 +163,7 @@ dialog label{font-size:13px;color:var(--muted);display:grid;gap:4px}
     <div class="end"><button class="primary" value="ok">Entrar</button></div>
   </form>
 </dialog>
+<input type="file" id="filepick" hidden>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -198,6 +206,7 @@ async function init(){
   try {
     const cfg = await api("GET", "/api/config");
     $("#sync").hidden = cfg.mode !== "local";
+    cloudMode = cfg.mode === "cloud";
     await load();
   } catch (e) { if (!$("#login").open) toast("Erro: " + e.message); }
 }
@@ -238,9 +247,11 @@ function render(){
           <span>#${t.id} · criada ${fmt(t.created_at)}${t.completed_at ? " · concluída " + fmt(t.completed_at) : ""}</span>
         </div>
         ${t.result ? `<div class="result ${t.status==="bloqueada"?"blocked":""}">${esc(t.result)}</div>` : ""}
+        ${t.files && t.files.length ? `<div class="files">${t.files.map(f => `<span class="file"><button class="file-open" data-fid="${f.id}" title="Abrir ${esc(f.name)}">${fileIcon(f.mime)} <span>${esc(f.name)}</span> <small>${fmtSize(f.size)}</small></button><button class="ghost file-del" data-fid="${f.id}" data-name="${esc(f.name)}" aria-label="Remover ${esc(f.name)}">×</button></span>`).join("")}</div>` : ""}
       </div>
       <div class="actions">
         <button class="ghost" data-act="edit" aria-label="Editar">Editar</button>
+        <button class="ghost" data-act="attach" aria-label="Anexar arquivo" ${cloudMode ? "" : "hidden"}>Anexar</button>
         <button class="ghost danger" data-act="del" aria-label="Excluir">Excluir</button>
       </div>
     </li>`).join("") : `<li class="empty">${filter==="abertas" ? "Nenhuma tarefa aberta. Adicione uma acima." : "Nada aqui."}</li>`;
@@ -262,9 +273,45 @@ $("#filters").addEventListener("click", e => {
   render();
 });
 
+const fmtSize = n => n < 1024 ? n + " B" : n < 1048576 ? Math.round(n / 1024) + " KB" : (n / 1048576).toFixed(1) + " MB";
+const fileIcon = m => m === "application/pdf" ? "📄" : m.startsWith("image/") ? "🖼️" : "📎";
+let cloudMode = false, attachTo = null;
+
+async function openFile(fid){
+  const w = window.open("", "_blank");
+  try {
+    const { url } = await api("POST", `/api/files/${fid}/link`);
+    const full = new URL(url, location.origin).href;
+    if (w) w.location.href = full; else location.href = full;
+  } catch (err) { if (w) w.close(); toast("Erro: " + err.message); }
+}
+
+$("#filepick").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = "";
+  if (!f || !attachTo) return;
+  if (f.size > 1900000) { toast("Arquivo grande demais (máximo 1,9 MB)"); return; }
+  toast("Enviando " + f.name + "…");
+  try {
+    const r = await fetch(`/api/tasks/${attachTo}/files?name=${encodeURIComponent(f.name)}`, {method:"POST", headers:{Authorization:"Bearer " + token}, body:f});
+    const d = await r.json().catch(() => ({}));
+    if (r.status === 401) { askLogin(); return; }
+    if (!r.ok) throw new Error(d.error || r.statusText);
+    toast("Arquivo anexado"); load();
+  } catch (err) { toast("Erro: " + err.message); }
+});
+
 $("#list").addEventListener("click", async e => {
   const li = e.target.closest("li.task"); if (!li) return;
   const t = tasks.find(x => x.id == li.dataset.id);
+  const fo = e.target.closest(".file-open"), fd = e.target.closest(".file-del");
+  if (fo) { openFile(fo.dataset.fid); return; }
+  if (fd) {
+    if (!confirm(`Remover o arquivo "${fd.dataset.name}"?`)) return;
+    try { await api("DELETE", `/api/files/${fd.dataset.fid}`); toast("Arquivo removido"); load(); }
+    catch (err) { toast("Erro: " + err.message); }
+    return;
+  }
+  if (e.target.dataset.act === "attach") { attachTo = t.id; $("#filepick").click(); return; }
   if (e.target.classList.contains("check")) {
     try { await api("PUT", `/api/tasks/${t.id}`, {status: e.target.checked ? "concluida" : "pendente"}); load(); }
     catch (err) { toast("Erro: " + err.message); }
