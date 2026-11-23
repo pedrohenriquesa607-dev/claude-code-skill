@@ -14,6 +14,7 @@ Quem é o usuário e em que contexto ele trabalha. Atualize quando algo mudar.
 | Projeto | Descrição | Status | Atualizado em |
 |---|---|---|---|
 | claude-code-skill | Repositório de skills, MCP e memória persistente do Claude Code | ativo | 2026-11-22 |
+| sites NexCode | Sites de clientes publicados pelo agente em nexcode.pedrohenriquesa607.workers.dev/<nome> | ativo | 2026-11-23 |
 | painel-tarefas | Painel de tarefas na Cloudflare (painel-tarefas.pedrohenriquesa607.workers.dev) com agente de hora em hora; instalado como app (PWA); arquivos anexados, avisos, conversa, prazos, repetições, compartilhar | ativo | 2026-11-23 |
 
 ## Contexto relevante
