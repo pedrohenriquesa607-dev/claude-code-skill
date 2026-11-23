@@ -18,8 +18,8 @@ const MANIFEST = JSON.stringify({
   scope: "/",
   display: "standalone",
   orientation: "portrait",
-  background_color: "#f6f5f2",
-  theme_color: "#2f5bd3",
+  background_color: "#03060c",
+  theme_color: "#03060c",
   icons: [
     { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
     { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
@@ -29,7 +29,7 @@ const MANIFEST = JSON.stringify({
 
 // Service worker: guarda só a página e os ícones para abrir rápido (as tarefas, em
 // /api, sempre vêm da internet) e mostra os avisos (push) no celular.
-const SW = `const C = "painel-v2";
+const SW = `const C = "painel-v3";
 self.addEventListener("install", e => { e.waitUntil(caches.open(C).then(c => c.addAll(["/", "/md.js", "/icon-192.png", "/icon-512.png"]))); self.skipWaiting(); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== C).map(k => caches.delete(k))))); self.clients.claim(); });
 self.addEventListener("fetch", e => {
@@ -536,7 +536,7 @@ export default {
       return new Response(HTML, {
         headers: {
           "content-type": "text/html; charset=utf-8",
-          "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; worker-src 'self'; manifest-src 'self'; style-src 'unsafe-inline'; frame-ancestors 'none'",
+          "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; worker-src 'self'; manifest-src 'self'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; frame-ancestors 'none'",
           "x-content-type-options": "nosniff",
           "referrer-policy": "no-referrer",
         },
