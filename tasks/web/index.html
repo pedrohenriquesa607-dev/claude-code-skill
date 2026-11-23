@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Painel de Tarefas</title>
+<title>NexCode</title>
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="/icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#03060c">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Tarefas">
+<meta name="apple-mobile-web-app-title" content="NexCode">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <script src="/md.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,22 +48,24 @@ body{margin:0;background:var(--ink);color:var(--text);font:15px/1.55 var(--body)
 
 /* abertura */
 .hero{position:relative;padding:56px 0 36px;min-height:280px}
-/* Lua real (NASA). O recorte redondo e a sombra do terminador ficam no contêiner
-   (parados); a foto gira devagar por baixo deles, o que dá sensação de volume.
-   Três movimentos: entrada, flutuação lenta e giro; a rolagem desloca a Lua mais
-   devagar que a página (propriedade translate, definida pelo script). */
-.moon{position:absolute;z-index:-1;width:min(560px,96vw);aspect-ratio:1;right:-200px;top:-210px;pointer-events:none;user-select:none;
-  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 47.5%,transparent 49.5%),linear-gradient(105deg,transparent 18%,rgba(0,0,0,.35) 34%,#000 52%);
+/* Céu fixo: Lua e Terra (fotos NASA, domínio público) se revezam a cada 5 minutos,
+   cruzando o topo da tela num arco. Recorte redondo + sombra do terminador ficam
+   parados no contêiner; a foto gira devagar por baixo. Posição calculada pelo relógio. */
+.sky{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.orb{position:absolute;left:0;top:0;width:var(--orb-size,min(500px,80vw));aspect-ratio:1;
+  transform:translate3d(var(--orb-x,60vw),var(--orb-y,-120px),0);transition:transform .5s linear;will-change:transform;
+  filter:brightness(.7) saturate(.9);opacity:.9;
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 47.5%,transparent 49.5%),linear-gradient(var(--light,105deg),transparent 18%,rgba(0,0,0,.35) 34%,#000 52%);
   -webkit-mask-composite:source-in;
-  mask-image:radial-gradient(circle at 50% 50%,#000 47.5%,transparent 49.5%),linear-gradient(105deg,transparent 18%,rgba(0,0,0,.35) 34%,#000 52%);
-  mask-composite:intersect;
-  translate:0 var(--moon-y,0px);
-  animation:rise 1.6s cubic-bezier(.2,.7,.1,1) both,drift 16s ease-in-out 1.6s infinite alternate}
-.moon img{display:block;width:100%;height:100%;filter:saturate(.85) contrast(1.05);animation:spin 240s linear infinite;will-change:transform}
-@keyframes rise{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
-@keyframes drift{from{transform:translate(0,0)}to{transform:translate(-10px,14px)}}
+  mask-image:radial-gradient(circle at 50% 50%,#000 47.5%,transparent 49.5%),linear-gradient(var(--light,105deg),transparent 18%,rgba(0,0,0,.35) 34%,#000 52%);
+  mask-composite:intersect;animation:rise 1.6s cubic-bezier(.2,.7,.1,1) both}
+.orb img{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity 1.6s ease;animation:spin 240s linear infinite}
+.orb[data-body=moon] .b-moon,.orb[data-body=earth] .b-earth{opacity:1}
+.wrap{z-index:1}
+h1,.hero .sub,h2,.masthead{text-shadow:0 2px 24px rgba(3,6,12,.95),0 0 2px rgba(3,6,12,.9)}
+@keyframes rise{from{opacity:0}to{opacity:1}}
 @keyframes spin{to{transform:rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){.moon,.moon img{animation:none}}
+@media (prefers-reduced-motion:reduce){.orb,.orb img{animation:none;transition:none}}
 h1{font:800 clamp(64px,13vw,150px)/.88 var(--display);font-stretch:112%;letter-spacing:-.035em;margin:0;text-wrap:balance}
 .hero .sub{max-width:34ch;margin-top:18px;color:var(--muted);font-size:15px}
 .sub{color:var(--muted);font-size:14px}
@@ -189,7 +191,7 @@ dialog p{margin:0;color:var(--muted);font-size:14px}
 .toast.show{opacity:1}
 @media (max-width:640px){
   .hero{padding:40px 0 28px;min-height:0}
-  .moon{width:340px;right:-150px;top:-120px}
+
   .stats{margin-top:26px}
   .stat{padding:12px 8px 2px}
   .stat b{font-size:28px}
@@ -204,6 +206,12 @@ dialog p{margin:0;color:var(--muted);font-size:14px}
 </style>
 </head>
 <body>
+<div class="sky" aria-hidden="true">
+  <div class="orb" id="orb" data-body="moon">
+    <img class="b-moon" src="/moon.jpg" alt="" width="960" height="960" decoding="async">
+    <img class="b-earth" src="/earth.jpg" alt="" width="960" height="960" decoding="async" loading="lazy">
+  </div>
+</div>
 <div class="wrap">
   <header class="masthead">
     <div class="brand"><img src="/icon-192.png" alt="" width="34" height="34">NexCode</div>
@@ -215,7 +223,6 @@ dialog p{margin:0;color:var(--muted);font-size:14px}
   </header>
 
   <section class="hero">
-    <div class="moon" aria-hidden="true"><img src="/moon.jpg" alt="" width="960" height="960" decoding="async"></div>
     <h1>Tarefas.</h1>
     <p class="sub">O NexCode Agente trabalha nas pendentes de hora em hora, pela ordem de prioridade.</p>
     <div class="stats" id="stats"></div>
@@ -833,15 +840,29 @@ $("#sync").addEventListener("click", async e => {
 
 $("#logbox").addEventListener("toggle", () => { if ($("#logbox").open) loadLog(); });
 
-// ---- Lua acompanha a rolagem mais devagar (profundidade) ----
+// ---- Órbita: Lua (direita -> esquerda) e Terra (esquerda -> direita), 5 min cada ----
 (() => {
-  const moon = document.querySelector(".moon");
-  if (!moon || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  let ticking = false;
-  addEventListener("scroll", () => {
-    if (ticking) return; ticking = true;
-    requestAnimationFrame(() => { moon.style.setProperty("--moon-y", Math.min(scrollY, 900) * 0.35 + "px"); ticking = false; });
-  }, { passive: true });
+  const orb = document.getElementById("orb");
+  if (!orb) return;
+  const PERIOD = 5 * 60 * 1000;
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function place(){
+    const W = innerWidth, S = Math.min(500, W * 0.8);
+    orb.style.setProperty("--orb-size", S + "px");
+    const now = Date.now(), lap = Math.floor(now / PERIOD), p = still ? 0 : (now % PERIOD) / PERIOD;
+    const moon = still || lap % 2 === 0;
+    const e = 0.5 - 0.5 * Math.cos(Math.PI * p);           // acelera e desacelera
+    const right = W - S * 0.5, left = -S * 0.5;               // metade do disco visível nas pontas
+    const x = moon ? right + (left - right) * e : left + (right - left) * e;
+    const y = -S * 0.62 + S * 0.24 * Math.sin(Math.PI * e);  // arco perto do topo: só a parte de baixo aparece
+    orb.dataset.body = moon ? "moon" : "earth";
+    orb.style.setProperty("--light", moon ? "105deg" : "255deg"); // luz vem do lado para onde vai
+    orb.style.setProperty("--orb-x", x.toFixed(1) + "px");
+    orb.style.setProperty("--orb-y", y.toFixed(1) + "px");
+  }
+  place();
+  if (!still) setInterval(() => { if (!document.hidden) place(); }, 500);
+  addEventListener("resize", place);
 })();
 
 // ---- App instalável (PWA) ----
