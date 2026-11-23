@@ -76,6 +76,8 @@ scripts/add_decision.sh "decisão" "raciocínio" "resultado esperado"
   `tasks_cli.py wait-now`), etiquetas, repetições (tabela `recurring` + cron da
   Cloudflare a cada 10 min; o "Resumo da semana" de sexta 20h é criado sozinho),
   busca, compartilhar com cliente (`/s/<token>`, tabela `shares`).
+- O agente de hora em hora tem o conector do Canva (slides, artes, imagens, editar fotos);
+  a rede do ambiente libera export-download.canva.com e www.canva.com para baixar/enviar arquivos.
 - Sem emojis no app, nos avisos e nos resultados do agente (preferência do usuário).
 - Mudanças no banco: escrever em `cloudflare/migrations/` e aplicar no D1 real
   (ferramenta d1_database_query) ANTES de publicar o código.

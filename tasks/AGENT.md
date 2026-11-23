@@ -55,7 +55,29 @@ cópia exportada do painel.
    um slide de capa e um de fechamento com contato/próximo passo, números e
    destaques em tamanho grande. Sem emojis. Antes de anexar, abra o PDF e confira
    cada página (texto cortado, sobreposto ou vazio); corrija e gere de novo.
-7. Para relatórios (ex.: "Resumo da semana"), use
+7. **Canva (apresentações, artes, imagens).** Se as ferramentas `mcp__Canva__*`
+   estiverem disponíveis (carregue com ToolSearch), use o Canva sempre que a tarefa
+   pedir slides, arte, post, cartaz, convite, imagem ou edição de foto: o resultado
+   fica bem mais bonito que o `python-pptx`, que vira só plano B.
+   - **Apresentação ou arte:** `create-design` com um brief completo (tema, público,
+     objetivo, estilo, textos exatos, datas e locais); para apresentação, mande um
+     `outline` com os slides. Não há tela para acompanhar, então consulte
+     `get-create-design-async-job` esperando o tempo que ele indicar, até terminar.
+     Se a tarefa citar uma marca ou o usuário tiver um kit de marca, use `list-brand-kits`.
+   - **Imagem nova:** `generate-image` e consulte `get-generate-image-job` até ficar pronta.
+   - **Foto do usuário:** baixe o anexo com `python3 tasks/tasks_cli.py download <file_id> /tmp/foto.jpg`
+     (o `file_id` está em `files` no JSON da tarefa), peça `create-upload-url` e envie
+     com `curl -X POST -H "Content-Type: application/octet-stream" --data-binary @/tmp/foto.jpg "<url>"`;
+     a resposta traz o `mediaId`. Depois use `remove-background`, `generate-image` com a
+     foto em `imageReferences`, ou `create-design` com o `mediaId` em `references`.
+   - **Entregar:** `get-export-formats` e `export-design` (apresentação: `pptx` e `pdf`;
+     arte: `png`, e `pdf` se for para imprimir). Baixe cada URL com `curl -L -o arquivo "<url>"`
+     e anexe com `tasks_cli.py attach`. No resultado, coloque o link do Canva para
+     editar ("Abrir no Canva") e uma prévia do que foi feito.
+   - Use só o que a tarefa pedir: cada geração gasta créditos de IA do Canva do usuário.
+     Não salve nem altere designs antigos do usuário sem a tarefa pedir.
+   - Se o Canva falhar (sem créditos, fora do ar), faça com `python-pptx`/PDF e avise no resultado.
+8. Para relatórios (ex.: "Resumo da semana"), use
    `python3 tasks/tasks_cli.py history 7` para ver a atividade dos últimos dias.
 
 ## 4. Quando NÃO fazer — bloquear em vez disso

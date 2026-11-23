@@ -13,6 +13,7 @@ os arquivos locais). Senão, usa tasks/tasks.json e tasks/tasks.log.
   tasks_cli.py block <id> "<motivo>"    status -> bloqueada
   tasks_cli.py log "<mensagem>"
   tasks_cli.py attach <id> <arquivo>    anexa um arquivo (PDF, imagem…) à tarefa no painel (máx. 1,9 MB)
+  tasks_cli.py download <file_id> <caminho>   baixa um anexo da tarefa (ex.: foto enviada pelo usuário)
   tasks_cli.py comment <id> "<texto>"   responde ao usuário na conversa da tarefa
   tasks_cli.py history [dias]           atividade dos últimos N dias (padrão 7)
   tasks_cli.py wait-now [minutos]       plantão: espera até aparecer tarefa "fazer agora"
@@ -101,6 +102,14 @@ def main(a):
         print(f"#{t['id']} criada")
     elif c == "start":
         b.update(int(a[1]), {"status": "em_andamento", "run_now": 0} if isinstance(b, Remote) else {"status": "em_andamento"})
+    elif c == "download":
+        if not isinstance(b, Remote):
+            sys.exit("download só funciona com o painel publicado")
+        link = b.call("POST", f"/api/files/{int(a[1])}/link")["url"]
+        req = urllib.request.Request(b.url + link, headers={"User-Agent": "painel-tarefas-agente/1.0"})
+        with urllib.request.urlopen(req, timeout=60) as r:
+            pathlib.Path(a[2]).write_bytes(r.read())
+        print(f"salvo em {a[2]}")
     elif c == "comment":
         if not isinstance(b, Remote):
             sys.exit("comment só funciona com o painel publicado")
