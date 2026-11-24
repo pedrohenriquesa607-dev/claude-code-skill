@@ -33,3 +33,7 @@ Quem é o usuário e em que contexto ele trabalha. Atualize quando algo mudar.
   Antes de construir: página de vendas com lista de espera e medir o custo real de 10 tarefas.
   Precisa de MEI, termos de uso, política de privacidade (LGPD) e Mercado Pago ou Asaas.
   Status: adiado pelo usuário.
+- **Freelancer Shopify** (2026-11-24): sem dinheiro para investir; acha difícil vender sites/SaaS na região.
+  Avaliando montar lojas Shopify como freelancer (Workana, 99Freelas, Fiverr) com lojas demo de portfólio.
+  Já tem conta no site da Shopify (tipo de conta a confirmar).
+- **Cardápio digital** (2026-11-24): ideia de SaaS grátis (catálogo com pedido pelo WhatsApp) guardada, não iniciada.
