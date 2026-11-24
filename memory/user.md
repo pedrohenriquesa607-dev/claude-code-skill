@@ -36,5 +36,5 @@ Quem é o usuário e em que contexto ele trabalha. Atualize quando algo mudar.
 - **Freelancer Shopify** (2026-11-24): sem dinheiro para investir; acha difícil vender sites/SaaS na região.
   Avaliando montar lojas Shopify como freelancer (Workana, 99Freelas, Fiverr) com lojas demo de portfólio.
   Conta de parceiro Shopify (Dev Dashboard) criada em 2026-11-24, organização "NextCode" (corrigir para NexCode).
-  Loja demo 1 "Aurora Moda" (roupas, 8 produtos, 2 coleções) criada pelo agente em 2026-11-24; falta o usuário salvar na conta e pôr o tema em português.
+  Loja demo 1 "Aurora Moda" (roupas, 8 produtos, 2 coleções) criada pelo agente em 2026-11-24; salva na conta do usuário e já em português (2026-11-24). Pendente: menu "Lar" -> "Início"; reconectar o conector Shopify para eu editar.
 - **Cardápio digital** (2026-11-24): ideia de SaaS grátis (catálogo com pedido pelo WhatsApp) guardada, não iniciada.
