@@ -35,5 +35,5 @@ Quem é o usuário e em que contexto ele trabalha. Atualize quando algo mudar.
   Status: adiado pelo usuário.
 - **Freelancer Shopify** (2026-11-24): sem dinheiro para investir; acha difícil vender sites/SaaS na região.
   Avaliando montar lojas Shopify como freelancer (Workana, 99Freelas, Fiverr) com lojas demo de portfólio.
-  Já tem conta no site da Shopify (tipo de conta a confirmar).
+  Conta de parceiro Shopify (Dev Dashboard) criada em 2026-11-24, organização NexCode.
 - **Cardápio digital** (2026-11-24): ideia de SaaS grátis (catálogo com pedido pelo WhatsApp) guardada, não iniciada.
