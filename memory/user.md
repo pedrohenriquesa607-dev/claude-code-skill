@@ -20,6 +20,7 @@ Quem é o usuário e em que contexto ele trabalha. Atualize quando algo mudar.
 ## Contexto relevante
 - Publica vários sites na Cloudflare Workers (conta pessoal; subdomínio pedrohenriquesa607.workers.dev). (2026-11-22)
 - Celular Android que bloqueia avisos do navegador (Web Push trava); avisos do painel funcionam pelo app ntfy (2026-11-23).
+- Plugin ECC (affaan-m/ECC) instalado no repositório em .claude/settings.json, fixo na v2.2.3, ganchos em "minimal". Revisado antes de instalar. Para remover: apagar o arquivo. (2026-11-24)
 - Não é desenvolvedor: precisa de instruções simples, passo a passo, uma tela por vez. (2026-11-22)
 
 ## Ideias para o futuro
