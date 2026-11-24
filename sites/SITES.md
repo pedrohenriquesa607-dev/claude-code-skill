@@ -21,3 +21,13 @@
    tirado com o Playwright abrindo o link publicado.
 6. Cada arquivo do site deve ter menos de 1,9 MB. Guarde também uma cópia em `sites/clientes/<nome>/`
    no repositório se o push funcionar (é só backup; o site no ar vem do banco).
+
+# Formulário no site (inscrição, cadastro)
+
+- O site envia `POST /<nome>/_form` (JSON); o worker `nexcode` valida e grava em `site_form_entries`.
+- A configuração fica em `site_forms` (D1, migração `cloudflare/migrations/0004_formularios.sql`):
+  campos (`fields`, JSON com name/label/type cpf|phone/required/options), campo que não repete
+  (`unique_field`), fim das inscrições (`closes_at`, UTC) e o token secreto do organizador.
+- Lista para o organizador: `/<nome>/_inscritos?k=<token>` (`&csv=1` baixa planilha). O token só existe no D1;
+  nunca grave no repositório.
+- Exemplo pronto: `sites/clientes/corrida-do-oliveira/` (inscrição + Pix Copia e Cola com valor + comprovante no WhatsApp).

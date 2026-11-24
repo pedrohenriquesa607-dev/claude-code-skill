@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Corrida do Oliveira - 5 km - 27 de dezembro</title>
+<meta name="description" content="Corrida do Oliveira: 5 km em Fernando Falcão - MA, 27 de dezembro de 2026, largada às 6h. Inscrição R$ 90,00 com camisa e número de peito.">
+<meta property="og:title" content="Corrida do Oliveira - 5 km">
+<meta property="og:description" content="27 de dezembro, 6h, Fernando Falcão - MA. Inscrições até 25 de dezembro. R$ 90,00 com camisa e número de peito.">
+<meta name="theme-color" content="#0b0b0c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0b0b0c;--card:#141416;--line:#26262a;--fg:#f4f4f2;--mute:#a3a3a8;--acc:#ff6a1a;--acc2:#ffb21a;--ok:#2fd17a;--err:#ff5a5a}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+  .display{font-family:Anton,Impact,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.01em;line-height:.92}
+  .dot{color:var(--acc)}
+
+  /* Topo */
+  header.hero{position:relative;overflow:hidden;padding:28px 0 56px;border-bottom:1px solid var(--line)}
+  .hero::before{content:"";position:absolute;inset:auto -20% -40% -20%;height:70%;background:radial-gradient(60% 60% at 50% 100%,rgba(255,106,26,.28),transparent 70%);pointer-events:none}
+  .lanes{position:absolute;inset:0;background:repeating-linear-gradient(100deg,transparent 0 120px,rgba(255,255,255,.035) 120px 122px);pointer-events:none}
+  .tag{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;color:var(--mute);background:rgba(20,20,22,.7)}
+  .tag b{color:var(--acc2);font-weight:600}
+  h1{font-size:clamp(64px,19vw,176px);margin:22px 0 10px}
+  h1 small{display:block;margin-top:14px;font:600 clamp(15px,4.2vw,19px)/1.3 Inter,system-ui,sans-serif;letter-spacing:.14em;color:var(--acc2)}
+  .lead{font-size:clamp(17px,4.4vw,21px);color:#d6d6d2;max-width:34ch;margin:0 0 26px}
+  .cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--acc);color:#111;font-weight:700;font-size:17px;text-decoration:none;border:0;border-radius:14px;padding:17px 26px;min-height:56px;cursor:pointer;transition:transform .15s,background .15s}
+  .cta:hover{background:#ff7d38;transform:translateY(-1px)}
+  .cta:disabled{opacity:.6;cursor:wait;transform:none}
+  .cta.full{width:100%}
+  .count{display:flex;gap:10px;margin-top:30px}
+  .count div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:68px;text-align:center}
+  .count b{display:block;font-family:Anton,sans-serif;font-size:30px;font-weight:400;line-height:1}
+  .count span{font-size:12px;color:var(--mute)}
+
+  /* Fatos */
+  .facts{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+  .fact{background:var(--bg);padding:22px 20px}
+  .fact span{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+  .fact b{font-family:Anton,sans-serif;font-weight:400;font-size:clamp(26px,7vw,40px);line-height:1}
+  .fact em{display:block;font-style:normal;color:var(--mute);font-size:14px;margin-top:4px}
+
+  section{padding:64px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:clamp(40px,11vw,76px);margin:0 0 22px}
+  .grid2{display:grid;gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
+  .card h3{margin:0 0 6px;font-size:19px}
+  .card p{margin:0;color:var(--mute)}
+  .kit{display:flex;gap:14px;align-items:flex-start}
+  .ico{flex:none;width:46px;height:46px;border-radius:12px;background:rgba(255,106,26,.14);display:grid;place-items:center;color:var(--acc)}
+  .steps{counter-reset:s;list-style:none;padding:0;margin:0;display:grid;gap:12px}
+  .steps li{counter-increment:s;display:flex;gap:14px;align-items:flex-start;color:#d6d6d2}
+  .steps li::before{content:counter(s);flex:none;width:32px;height:32px;border-radius:50%;background:var(--fg);color:#111;font-weight:700;display:grid;place-items:center}
+
+  /* Formulário */
+  #inscricao{background:linear-gradient(180deg,#121214,var(--bg))}
+  form{display:grid;gap:16px;max-width:560px}
+  label{display:grid;gap:7px;font-weight:600;font-size:15px}
+  input{width:100%;font:inherit;font-size:17px;color:var(--fg);background:#0e0e10;border:1px solid #33333a;border-radius:12px;padding:15px 14px;min-height:54px;outline:none}
+  input:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(255,106,26,.22)}
+  input.bad{border-color:var(--err)}
+  .sizes{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .sizes input{position:absolute;opacity:0;pointer-events:none}
+  .sizes label{display:grid;place-items:center;min-height:54px;border:1px solid #33333a;border-radius:12px;background:#0e0e10;cursor:pointer;font-size:18px}
+  .sizes input:checked+span{color:#111}
+  .sizes label:has(input:checked){background:var(--fg);border-color:var(--fg);color:#111}
+  .sizes input:focus-visible+span{outline:2px solid var(--acc);outline-offset:4px}
+  fieldset{border:0;padding:0;margin:0}
+  legend{font-weight:600;font-size:15px;margin-bottom:7px;padding:0}
+  .hp{position:absolute;left:-9999px}
+  .msg{min-height:22px;color:var(--err);font-weight:500;margin:0}
+  .fine{font-size:13px;color:var(--mute);margin:0}
+
+  /* Pagamento */
+  #pagar{display:none;max-width:560px}
+  #pagar.on{display:block}
+  .okbox{display:flex;gap:12px;align-items:center;background:rgba(47,209,122,.1);border:1px solid rgba(47,209,122,.35);border-radius:14px;padding:14px 16px;margin-bottom:18px}
+  .okbox b{color:var(--ok)}
+  .pix{background:var(--fg);color:#111;border-radius:20px;padding:22px}
+  .pix .val{font-family:Anton,sans-serif;font-size:48px;line-height:1;margin:2px 0 14px}
+  .qr{width:220px;max-width:70%;margin:0 auto 14px;display:block;border-radius:10px}
+  .qr svg{width:100%;height:auto;display:block}
+  .code{font:12px/1.4 ui-monospace,monospace;word-break:break-all;background:#eceae4;border-radius:10px;padding:10px;margin:0 0 12px;color:#333}
+  .btn2{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;border-radius:12px;border:0;font:inherit;font-weight:700;font-size:16px;cursor:pointer;text-decoration:none}
+  .btn-dark{background:#111;color:#fff}
+  .btn-wa{background:#1fae5b;color:#fff;margin-top:14px}
+  .key{display:flex;justify-content:space-between;gap:10px;border-top:1px solid #d9d6cf;padding-top:12px;margin-top:12px;font-size:14px}
+  .closed{display:none}
+  body.encerrado .closed{display:block}
+  body.encerrado #form,body.encerrado .open-only{display:none}
+
+  footer{padding:36px 0 48px;color:var(--mute);font-size:14px}
+  footer a{color:var(--fg)}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:var(--fg);color:#111;font-weight:600;padding:12px 18px;border-radius:12px;transition:transform .25s;z-index:9;visibility:hidden}
+  .toast.on{transform:translateX(-50%) translateY(0);visibility:visible}
+
+  @media (min-width:760px){
+    .facts{grid-template-columns:repeat(4,1fr)}
+    .grid2{grid-template-columns:1fr 1fr}
+    header.hero{padding:40px 0 80px}
+    section{padding:88px 0}
+  }
+  @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="lanes"></div>
+  <div class="wrap" style="position:relative">
+    <span class="tag"><b>Inscrições abertas</b> até 25 de dezembro</span>
+    <h1 class="display">Corrida do Oliveira<span class="dot">.</span><small>5 km - Fernando Falcão - MA</small></h1>
+    <p class="lead">Dia 27 de dezembro, largada às 6h da manhã. Garanta sua vaga com camisa e número de peito.</p>
+    <a class="cta open-only" href="#inscricao">Quero me inscrever</a>
+    <div class="count" id="count" aria-label="Contagem regressiva para a largada">
+      <div><b id="cd-d">--</b><span>dias</span></div>
+      <div><b id="cd-h">--</b><span>horas</span></div>
+      <div><b id="cd-m">--</b><span>min</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="facts">
+  <div class="fact"><span>Distância</span><b>5 km</b></div>
+  <div class="fact"><span>Data</span><b>27/12</b><em>domingo, 2026</em></div>
+  <div class="fact"><span>Largada</span><b>6h</b><em>da manhã</em></div>
+  <div class="fact"><span>Inscrição</span><b>R$ 90</b><em>com kit</em></div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2 class="display">O kit<span class="dot">.</span></h2>
+    <div class="grid2">
+      <div class="card kit">
+        <div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M8 3 4 5 2 10l3 1v10h14V11l3-1-2-5-4-2c0 2-1.5 3-4 3S8 5 8 3Z"/></svg></div>
+        <div><h3>Camisa oficial</h3><p>Escolha o tamanho na inscrição: P, M, G ou GG.</p></div>
+      </div>
+      <div class="card kit">
+        <div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 15V9l-2 1.5M12 9h4v3h-4v3h4"/></svg></div>
+        <div><h3>Número de peito</h3><p>Seu número para a prova, com alfinetes.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap grid2">
+    <div>
+      <h2 class="display">Retirada<span class="dot">.</span></h2>
+      <p style="color:#d6d6d2;margin:0 0 8px">Retire o kit no dia 26 de dezembro ou no dia da corrida, antes da largada.</p>
+      <p class="fine">Local da retirada e ponto exato da largada serão divulgados em breve pelo organizador.</p>
+    </div>
+    <div>
+      <h2 class="display">Como funciona<span class="dot">.</span></h2>
+      <ol class="steps">
+        <li>Preencha a inscrição abaixo.</li>
+        <li>Pague R$ 90,00 no Pix.</li>
+        <li>Mande o comprovante no WhatsApp do organizador.</li>
+        <li>Retire seu kit e corra no dia 27.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="inscricao">
+  <div class="wrap">
+    <h2 class="display">Inscrição<span class="dot">.</span></h2>
+
+    <div class="closed card" style="max-width:560px">
+      <h3>As inscrições foram encerradas.</h3>
+      <p>Dúvidas? Fale com o organizador no WhatsApp (99) 98440-6080.</p>
+    </div>
+
+    <form id="form" novalidate>
+      <label>Nome completo
+        <input name="nome" autocomplete="name" required maxlength="120" placeholder="Como no documento">
+      </label>
+      <label>CPF
+        <input name="cpf" inputmode="numeric" required maxlength="14" placeholder="000.000.000-00">
+      </label>
+      <label>WhatsApp
+        <input name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" required maxlength="16" placeholder="(99) 99999-9999">
+      </label>
+      <fieldset>
+        <legend>Tamanho da camisa</legend>
+        <div class="sizes">
+          <label><input type="radio" name="camisa" value="P" required><span>P</span></label>
+          <label><input type="radio" name="camisa" value="M"><span>M</span></label>
+          <label><input type="radio" name="camisa" value="G"><span>G</span></label>
+          <label><input type="radio" name="camisa" value="GG"><span>GG</span></label>
+        </div>
+      </fieldset>
+      <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <p class="msg" id="msg" role="alert"></p>
+      <button class="cta full" id="send" type="submit">Fazer inscrição - R$ 90,00</button>
+      <p class="fine">Seus dados ficam só com o organizador da corrida.</p>
+    </form>
+
+    <div id="pagar" aria-live="polite">
+      <div class="okbox"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2fd17a" stroke-width="2.5"><path d="m5 12 5 5 9-10"/></svg><div><b id="ok-t">Inscrição recebida.</b><br><span id="ok-s" class="fine"></span></div></div>
+      <div class="pix">
+        <div style="font-weight:600">Pague com Pix</div>
+        <div class="val">R$ 90,00</div>
+        <div class="qr"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 424 424" role="img" aria-label="QR code Pix" class="segno"><g transform="scale(8)"><path fill="#fff" d="M0 0h53v53h-53z"/><path class="qrline" stroke="#111" d="M2 2.5h7m1 0h2m4 0h1m4 0h6m2 0h1m1 0h7m4 0h1m1 0h7m-49 1h1m5 0h1m1 0h2m3 0h1m4 0h3m1 0h8m2 0h1m1 0h1m2 0h4m1 0h1m5 0h1m-49 1h1m1 0h3m1 0h1m1 0h3m1 0h1m1 0h2m2 0h1m1 0h3m1 0h3m3 0h2m1 0h5m1 0h2m1 0h1m1 0h3m1 0h1m-49 1h1m1 0h3m1 0h1m3 0h1m1 0h4m2 0h1m1 0h1m1 0h2m2 0h1m1 0h1m2 0h2m2 0h2m2 0h1m2 0h1m1 0h3m1 0h1m-49 1h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h4m1 0h1m1 0h8m1 0h1m1 0h2m2 0h2m4 0h1m1 0h3m1 0h1m-49 1h1m5 0h1m2 0h4m5 0h1m1 0h1m1 0h1m3 0h4m5 0h1m1 0h2m3 0h1m5 0h1m-49 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-39 1h2m4 0h3m2 0h2m3 0h3m6 0h1m1 0h3m-40 1h1m2 0h6m2 0h2m3 0h4m2 0h7m1 0h2m1 0h2m1 0h3m2 0h1m2 0h1m1 0h3m-48 1h1m1 0h1m1 0h1m1 0h1m2 0h2m2 0h2m1 0h6m3 0h3m1 0h3m1 0h1m1 0h1m1 0h1m1 0h8m-48 1h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m4 0h1m8 0h4m1 0h1m1 0h2m1 0h1m2 0h2m-47 1h1m2 0h1m2 0h1m1 0h1m1 0h1m1 0h3m1 0h2m1 0h4m1 0h2m4 0h3m2 0h1m2 0h3m3 0h3m-49 1h4m1 0h3m2 0h1m1 0h2m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h3m1 0h2m2 0h5m1 0h1m1 0h1m2 0h1m-45 1h1m1 0h1m1 0h2m2 0h1m5 0h1m1 0h2m4 0h3m1 0h3m1 0h1m4 0h2m2 0h1m1 0h2m1 0h1m-48 1h2m1 0h2m1 0h3m1 0h4m1 0h2m1 0h1m3 0h3m1 0h2m2 0h1m1 0h3m1 0h2m1 0h3m1 0h1m1 0h1m2 0h1m-48 1h2m1 0h2m2 0h3m1 0h3m1 0h2m2 0h1m1 0h2m2 0h1m1 0h1m2 0h1m5 0h2m1 0h1m1 0h2m1 0h2m1 0h1m-48 1h2m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m1 0h1m2 0h2m1 0h2m1 0h2m1 0h6m2 0h3m1 0h2m1 0h2m-48 1h2m1 0h2m1 0h1m5 0h1m5 0h1m3 0h2m3 0h3m3 0h1m5 0h3m1 0h1m1 0h3m-48 1h1m3 0h3m1 0h2m1 0h2m1 0h3m1 0h1m3 0h2m2 0h2m2 0h3m1 0h2m3 0h1m3 0h3m1 0h1m-49 1h3m1 0h1m3 0h1m2 0h2m3 0h3m4 0h1m1 0h4m1 0h2m1 0h2m1 0h4m1 0h2m5 0h1m-49 1h1m1 0h7m1 0h1m1 0h2m1 0h5m4 0h1m2 0h3m1 0h1m1 0h1m1 0h3m4 0h2m4 0h1m-47 1h4m1 0h1m1 0h2m1 0h3m1 0h1m2 0h6m1 0h9m1 0h1m1 0h1m1 0h3m1 0h4m-48 1h3m1 0h5m1 0h2m3 0h3m3 0h6m2 0h1m2 0h3m2 0h1m2 0h6m1 0h2m-46 1h2m3 0h1m1 0h1m1 0h1m2 0h2m1 0h1m2 0h2m3 0h2m2 0h5m4 0h2m3 0h1m1 0h2m-46 1h1m1 0h1m1 0h1m1 0h3m2 0h1m1 0h3m3 0h2m1 0h1m1 0h4m1 0h2m1 0h7m1 0h1m1 0h1m2 0h2m-49 1h3m1 0h1m3 0h1m3 0h1m1 0h2m2 0h3m1 0h1m3 0h1m3 0h1m5 0h3m1 0h1m3 0h1m1 0h2m-48 1h3m1 0h5m2 0h1m2 0h3m5 0h8m1 0h1m4 0h1m1 0h1m1 0h5m1 0h1m1 0h1m-48 1h3m1 0h1m1 0h3m4 0h1m1 0h3m5 0h3m2 0h2m2 0h2m2 0h4m1 0h1m1 0h1m1 0h3m-49 1h1m1 0h3m1 0h1m2 0h2m1 0h2m1 0h1m1 0h1m2 0h1m3 0h1m1 0h1m3 0h1m1 0h1m3 0h4m4 0h1m1 0h2m-46 1h1m1 0h1m5 0h1m2 0h2m1 0h5m1 0h3m3 0h1m1 0h1m1 0h5m2 0h2m2 0h1m2 0h1m-47 1h5m1 0h2m2 0h1m2 0h1m2 0h2m1 0h1m1 0h1m2 0h7m1 0h3m1 0h2m1 0h4m3 0h3m-48 1h1m1 0h3m2 0h2m1 0h1m2 0h1m1 0h1m4 0h1m2 0h1m5 0h1m3 0h2m1 0h3m1 0h1m1 0h3m2 0h1m-48 1h2m2 0h3m5 0h1m1 0h5m4 0h2m1 0h2m2 0h1m1 0h1m2 0h2m1 0h1m2 0h2m1 0h3m-46 1h2m1 0h1m1 0h2m7 0h1m2 0h6m1 0h6m2 0h1m1 0h1m1 0h2m3 0h2m1 0h1m-47 1h2m1 0h1m1 0h2m2 0h1m1 0h1m3 0h1m2 0h5m1 0h1m1 0h1m2 0h2m1 0h1m1 0h4m2 0h3m2 0h1m1 0h2m-49 1h1m1 0h2m3 0h4m3 0h1m2 0h1m4 0h1m1 0h1m1 0h1m1 0h3m2 0h4m2 0h2m5 0h1m-47 1h5m1 0h2m1 0h2m1 0h2m1 0h1m1 0h2m2 0h1m3 0h2m1 0h2m2 0h1m3 0h6m-42 1h1m6 0h1m3 0h2m2 0h1m3 0h2m1 0h1m1 0h1m1 0h1m3 0h2m1 0h1m1 0h1m1 0h2m3 0h4m1 0h2m-48 1h1m3 0h6m2 0h2m1 0h1m1 0h2m2 0h1m2 0h1m2 0h1m2 0h1m1 0h1m1 0h1m2 0h2m2 0h2m1 0h4m-48 1h3m4 0h1m2 0h1m1 0h1m1 0h2m3 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h2m1 0h5m2 0h1m1 0h1m-47 1h3m3 0h2m1 0h2m2 0h1m1 0h3m1 0h1m1 0h7m2 0h1m1 0h1m1 0h3m1 0h7m1 0h3m-41 1h1m2 0h2m2 0h2m1 0h1m3 0h1m3 0h1m1 0h3m3 0h3m3 0h1m3 0h1m1 0h1m-47 1h7m1 0h3m1 0h1m1 0h1m2 0h1m2 0h3m1 0h1m1 0h1m1 0h1m2 0h2m2 0h2m3 0h1m1 0h1m1 0h2m1 0h2m-49 1h1m5 0h1m1 0h1m3 0h1m1 0h1m2 0h2m1 0h1m1 0h1m3 0h3m5 0h2m1 0h4m3 0h1m2 0h2m-49 1h1m1 0h3m1 0h1m1 0h2m2 0h1m1 0h3m1 0h1m2 0h6m1 0h3m3 0h1m1 0h2m1 0h6m-45 1h1m1 0h3m1 0h1m1 0h4m1 0h2m1 0h1m1 0h1m1 0h2m1 0h1m1 0h1m3 0h3m1 0h7m2 0h2m1 0h1m2 0h1m-49 1h1m1 0h3m1 0h1m2 0h1m2 0h2m3 0h4m1 0h3m3 0h1m1 0h2m3 0h2m1 0h2m2 0h1m1 0h2m1 0h1m-48 1h1m5 0h1m3 0h3m2 0h1m1 0h1m6 0h4m1 0h6m2 0h1m4 0h1m1 0h5m-49 1h7m1 0h1m6 0h1m1 0h4m1 0h8m1 0h3m1 0h2m1 0h1m1 0h7m1 0h1"/></g></svg>
+</div>
+        <p class="fine" style="color:#555;margin:0 0 8px">Ou copie o código e cole no app do banco (Pix Copia e Cola):</p>
+        <p class="code" id="code">00020126360014br.gov.bcb.pix0114+5599984406080520400005303986540590.005802BR5922ADAO DE OLIVEIRA LEITE6015FERNANDO FALCAO62070503***630482B5</p>
+        <button class="btn2 btn-dark" type="button" data-copy="00020126360014br.gov.bcb.pix0114+5599984406080520400005303986540590.005802BR5922ADAO DE OLIVEIRA LEITE6015FERNANDO FALCAO62070503***630482B5">Copiar código Pix</button>
+        <div class="key"><span>Chave (celular)<br><b>(99) 98440-6080</b></span><span style="text-align:right">Recebedor<br><b>Adão de Oliveira Leite</b></span></div>
+      </div>
+      <a class="btn2 btn-wa" id="wa" href="#" target="_blank" rel="noopener">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2c0 1.3 1 2.6 1.1 2.8.1.2 1.9 2.9 4.6 4 1.7.7 2.4.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>
+        Enviar comprovante no WhatsApp
+      </a>
+      <p class="fine" style="margin-top:12px">Sua vaga é confirmada pelo organizador depois que ele receber o comprovante.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p style="margin:0 0 6px"><b style="color:var(--fg)">Corrida do Oliveira</b> - organização: Adão de Oliveira Leite</p>
+    <p style="margin:0 0 6px">Dúvidas: <a href="https://wa.me/5599984406080?text=Ol%C3%A1%2C%20tenho%20uma%20d%C3%BAvida%20sobre%20a%20Corrida%20do%20Oliveira." target="_blank" rel="noopener">WhatsApp (99) 98440-6080</a></p>
+    <p style="margin:0">Site feito pela NexCode.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast">Código copiado</div>
+
+<script>
+(function(){
+  var RACE = Date.parse("2026-12-27T06:00:00-03:00");
+  var CLOSE = Date.parse("2026-12-26T00:00:00-03:00");
+  var WA = "5599984406080";
+  var $ = function(s){return document.querySelector(s)};
+
+  if (Date.now() >= CLOSE) document.body.classList.add("encerrado");
+
+  function tick(){
+    var d = Math.max(0, RACE - Date.now());
+    $("#cd-d").textContent = Math.floor(d/864e5);
+    $("#cd-h").textContent = String(Math.floor(d/36e5)%24).padStart(2,"0");
+    $("#cd-m").textContent = String(Math.floor(d/6e4)%60).padStart(2,"0");
+  }
+  tick(); setInterval(tick, 30000);
+
+  var f = $("#form");
+  var cpf = f.cpf, wa = f.whatsapp;
+  cpf.addEventListener("input", function(){
+    var v = cpf.value.replace(/\D/g,"").slice(0,11);
+    cpf.value = v.replace(/^(\d{3})(\d)/,"$1.$2").replace(/^(\d{3}\.\d{3})(\d)/,"$1.$2").replace(/^(\d{3}\.\d{3}\.\d{3})(\d)/,"$1-$2");
+  });
+  wa.addEventListener("input", function(){
+    var v = wa.value.replace(/\D/g,"").slice(0,11);
+    wa.value = v.length > 2 ? "(" + v.slice(0,2) + ") " + (v.length > 7 ? v.slice(2,7) + "-" + v.slice(7) : v.slice(2)) : v;
+  });
+
+  function cpfOk(v){
+    var d = v.replace(/\D/g,"");
+    if (d.length !== 11 || /^(\d)\1{10}$/.test(d)) return false;
+    for (var n = 9; n <= 10; n++){
+      var s = 0;
+      for (var i = 0; i < n; i++) s += +d[i] * (n + 1 - i);
+      if ((s * 10) % 11 % 10 !== +d[n]) return false;
+    }
+    return true;
+  }
+
+  function fail(el, t){
+    $("#msg").textContent = t;
+    if (el){ el.classList.add("bad"); el.focus(); }
+  }
+  f.addEventListener("input", function(e){ e.target.classList && e.target.classList.remove("bad"); $("#msg").textContent = ""; });
+
+  f.addEventListener("submit", function(e){
+    e.preventDefault();
+    var nome = f.nome.value.trim().replace(/\s+/g," ");
+    var size = (f.querySelector("input[name=camisa]:checked") || {}).value;
+    if (nome.split(" ").length < 2) return fail(f.nome, "Escreva o nome completo.");
+    if (!cpfOk(cpf.value)) return fail(cpf, "CPF inválido. Confira os números.");
+    var w = wa.value.replace(/\D/g,"");
+    if (w.length < 10) return fail(wa, "Escreva o WhatsApp com DDD.");
+    if (!size) return fail(null, "Escolha o tamanho da camisa.");
+    var btn = $("#send"); btn.disabled = true; btn.textContent = "Enviando...";
+    fetch("_form", {method:"POST", headers:{"content-type":"application/json"},
+      body: JSON.stringify({nome:nome, cpf:cpf.value, whatsapp:w, camisa:size, website:f.website.value})})
+      .then(function(r){ return r.json().then(function(j){ return {s:r.status, j:j}; }); })
+      .then(function(res){
+        if (res.j.ok || res.j.duplicate) return done(nome, size, res.j);
+        fail(null, res.j.error || "Não foi possível enviar. Tente de novo.");
+      })
+      .catch(function(){ fail(null, "Sem conexão. Confira a internet e tente de novo."); })
+      .finally(function(){ btn.disabled = false; btn.textContent = "Fazer inscrição - R$ 90,00"; });
+  });
+
+  function done(nome, size, j){
+    f.style.display = "none";
+    $("#ok-t").textContent = j.duplicate ? "Você já está inscrito." : "Inscrição nº " + j.id + " recebida.";
+    $("#ok-s").textContent = "Agora pague o Pix e mande o comprovante para confirmar sua vaga.";
+    var txt = "Olá, Adão! Fiz minha inscrição na Corrida do Oliveira." +
+      "\nNome: " + nome + (j.id ? "\nInscrição nº " + j.id : "") + "\nCamisa: " + size +
+      "\nSegue o comprovante do Pix de R$ 90,00.";
+    $("#wa").href = "https://wa.me/" + WA + "?text=" + encodeURIComponent(txt);
+    $("#pagar").classList.add("on");
+    $("#pagar").scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  document.querySelectorAll("[data-copy]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var t = b.getAttribute("data-copy");
+      var ok = function(){ var x = $("#toast"); x.classList.add("on"); setTimeout(function(){ x.classList.remove("on"); }, 1800); };
+      if (navigator.clipboard) navigator.clipboard.writeText(t).then(ok, fallback); else fallback();
+      function fallback(){ var a = document.createElement("textarea"); a.value = t; document.body.appendChild(a); a.select(); document.execCommand("copy"); a.remove(); ok(); }
+    });
+  });
+})();
+</script>
+</body>
+</html>

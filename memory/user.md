@@ -15,6 +15,7 @@ Quem é o usuário e em que contexto ele trabalha. Atualize quando algo mudar.
 |---|---|---|---|
 | claude-code-skill | Repositório de skills, MCP e memória persistente do Claude Code | ativo | 2026-11-22 |
 | sites NexCode | Sites de clientes publicados pelo agente em nexcode.pedrohenriquesa607.workers.dev/<nome> | ativo | 2026-11-23 |
+| corrida-do-oliveira | Cliente: corrida 5 km em Fernando Falcão-MA (27/12/2026), organizador Adão de Oliveira Leite. Site com inscrição e Pix; falta local da largada/retirada e logo | ativo | 2026-11-24 |
 | painel-tarefas | Painel de tarefas na Cloudflare (painel-tarefas.pedrohenriquesa607.workers.dev) com agente de hora em hora; instalado como app (PWA); arquivos anexados, avisos, conversa, prazos, repetições, compartilhar | ativo | 2026-11-23 |
 
 ## Contexto relevante
