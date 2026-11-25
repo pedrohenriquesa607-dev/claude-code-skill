@@ -18,6 +18,7 @@ Quem é o usuário e em que contexto ele trabalha. Atualize quando algo mudar.
 | painel-tarefas | Painel de tarefas na Cloudflare (painel-tarefas.pedrohenriquesa607.workers.dev) com agente de hora em hora; instalado como app (PWA); arquivos anexados, avisos, conversa, prazos, repetições, compartilhar | ativo | 2026-11-23 |
 
 ## Contexto relevante
+- Já vendeu um site para um cliente: a loja usefitnessby (contado em 2026-11-25).
 - Publica vários sites na Cloudflare Workers (conta pessoal; subdomínio pedrohenriquesa607.workers.dev). (2026-11-22)
 - Celular Android que bloqueia avisos do navegador (Web Push trava); avisos do painel funcionam pelo app ntfy (2026-11-23).
 - Não é desenvolvedor: precisa de instruções simples, passo a passo, uma tela por vez. (2026-11-22)
